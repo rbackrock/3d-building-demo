@@ -243,6 +243,7 @@ function handlerChangeView(type) {
                 font-weight: 400;
                 color: #fbfbfb;
                 text-align: center;
+                font-size: 0.8em;
               }
             }
           }
