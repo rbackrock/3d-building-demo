@@ -1,7 +1,8 @@
 import sourceType from './sourceType'
 
 export const sources = {
-  environmentMapTexture: 'environmentMapTexture'
+  environmentMapTexture: 'environmentMapTexture',
+  machineGltf: 'machineGltf'
 }
 
 export default [
@@ -17,14 +18,13 @@ export default [
       '/3d/images/sky-box/daytime/negz.jpg',
     ]
   },
-  // {
-  //   name: 'gltfModel',
-  //   type: sourceType.GLTFMODEL,
-  //   path: [
-  //     // '/factory-demo-1/models/factory-area.glb'
-  //     'http://cdn.rback.fun/factory-demo-1/factory-area.glb'
-  //   ]
-  // },
+  {
+    name: sources.machineGltf,
+    type: sourceType.GLTFMODEL,
+    path: [
+      '/3d/models/machine.glb'
+    ]
+  },
   // {
   //   name: 'fireImage',
   //   type: sourceType.TEXTURE,

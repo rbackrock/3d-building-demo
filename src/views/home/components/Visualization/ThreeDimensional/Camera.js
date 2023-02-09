@@ -4,11 +4,18 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import gsap from 'gsap'
 
 export const cameraType = {
-  STANDARD: 'standard_camera'
+  STANDARD: 'standard_camera',
+  DISASSEMBLE: 'disassemble_camera'
 }
 
 export const viewType = {
-  STANDARD: 'standard_view'
+  STANDARD: 'standard_view',
+  DISASSEMBLE: 'disassemble_view'
+}
+
+export const cameraLayers = {
+  STANDARD: 0,
+  DISASSEMBLE: 1
 }
 
 export default class Camera {
@@ -31,6 +38,7 @@ export default class Camera {
 
     // 当前活动摄像机
     this.setDefaultCamera()
+    this.setDisassembleCamera()
     this.setActiveCamera(cameraType.STANDARD)
 
     // 默认相机的相机位置
@@ -57,7 +65,8 @@ export default class Camera {
     // 默认相机拥有的控制器
     const controls = new OrbitControls(defaultCamera, this.canvas)
     controls.enableDamping = true
-    controls.maxPolarAngle = Math.PI / 180 * 75
+    // controls.maxPolarAngle = Math.PI / 180 * 75
+    controls.maxPolarAngle = Math.PI / 180 * 90
 
     this.cameraList[cameraType.STANDARD] = {
       camera: defaultCamera,
@@ -65,17 +74,31 @@ export default class Camera {
     }
   }
 
-  resize() {
-    for (const cameraKey in this.cameraList) {
-      const currentCamera = this.cameraList[cameraKey]
-      currentCamera.camera.aspect = this.sizes.width / this.sizes.height
-      currentCamera.camera.updateProjectionMatrix()
+  // 拆解使用得相机
+  setDisassembleCamera() {
+    const camera = new THREE.PerspectiveCamera(
+      35,
+      this.sizes.width / this.sizes.height,
+      0.01,
+      10000
+    )
+    camera.position.set(0.32, 6.81, -12.67)
+    camera.name = cameraType.DISASSEMBLE
+    this.scene.add(camera)
+
+    // 默认相机拥有的控制器
+    const controls = new OrbitControls(camera, this.canvas)
+    controls.enableDamping = true
+
+    this.cameraList[cameraType.DISASSEMBLE] = {
+      camera,
+      controls
     }
   }
 
-  update() {
-    if (this.activeControls) {
-      this.activeControls.update()
+  setLayerByMesh(meshList, layerId) {
+    for (const mesh of meshList) {
+      mesh.layers.set(layerId)
     }
   }
 
@@ -83,9 +106,15 @@ export default class Camera {
    * 设置活动摄像机
    * @param {String} cameraName 摄像机名称
    */
-  setActiveCamera(cameraType) {
-    this.activeCamera = this.cameraList[cameraType].camera
-    this.activeControls = this.cameraList[cameraType].controls
+  setActiveCamera(type) {
+    this.activeCamera = this.cameraList[type].camera
+    this.activeControls = this.cameraList[type].controls
+
+    if (type === cameraType.STANDARD) {
+      this.activeCamera.layers.set(cameraLayers.STANDARD)
+    } else if (type === cameraType.DISASSEMBLE) {
+      this.activeCamera.layers.set(cameraLayers.DISASSEMBLE)
+    }
   }
 
   /**
@@ -132,6 +161,20 @@ export default class Camera {
         animation = null
       }
     })
+  }
+
+  resize() {
+    for (const cameraKey in this.cameraList) {
+      const currentCamera = this.cameraList[cameraKey]
+      currentCamera.camera.aspect = this.sizes.width / this.sizes.height
+      currentCamera.camera.updateProjectionMatrix()
+    }
+  }
+
+  update() {
+    if (this.activeControls) {
+      this.activeControls.update()
+    }
   }
 
   destroy() {

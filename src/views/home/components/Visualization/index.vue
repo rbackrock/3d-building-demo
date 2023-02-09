@@ -1,23 +1,50 @@
 <script setup>
 import {
-  ref
+  ref,
+  onMounted,
+  onBeforeUnmount
 } from 'vue'
-import use3d from './composables/use3d'
 
-const {
-  isLoading,
-  threeDimensional
-} = use3d()
+import load from './ThreeDimensional/resources/index'
+import ThreeDimensional from './ThreeDimensional'
+import { cameraType } from './ThreeDimensional/Camera'
+
+let threeDimensional = null
+let world = null
 const viewType = {
   defaultView: 'defaultView',
   groundFloorView: 'groundFloorView',
   secondView: 'secondView',
-  thirdView: 'thirdView'
+  thirdView: 'thirdView',
+  disassembleView: 'disassembleView'
 }
+
+const isLoading = ref(true)
 const currentType = ref(viewType.defaultView)
 
+onMounted(async () => {
+  const resources = await load()
+  threeDimensional = new ThreeDimensional(document.querySelector('canvas.webgl'), resources)
+  world = threeDimensional.wolrd
+  isLoading.value = false
+})
+
+onBeforeUnmount(() => {
+  if (threeDimensional) {
+    threeDimensional.destroy()
+  }
+})
+
 function handlerChangeView(type) {
-  currentType.value = type
+  if (world) {
+    currentType.value = type
+
+    if (type === viewType.disassembleView) {
+      world.camera.setActiveCamera(cameraType.DISASSEMBLE)
+    } else {
+      world.camera.setActiveCamera(cameraType.STANDARD)
+    }
+  }
 }
 </script>
 
@@ -78,6 +105,15 @@ function handlerChangeView(type) {
               >
                 <div class="icon"></div>
                 <div class="text">三层楼</div>
+              </div>
+            </li>
+            <li class="item">
+              <div class="item-wrapper"
+                :class="{ active: viewType.disassembleView === currentType }"
+                @click="handlerChangeView(viewType.disassembleView)"
+              >
+                <div class="icon"></div>
+                <div class="text">拆解场景</div>
               </div>
             </li>
           </ul>

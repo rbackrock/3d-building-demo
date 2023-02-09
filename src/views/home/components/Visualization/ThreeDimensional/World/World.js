@@ -5,7 +5,15 @@ import gsap from 'gsap'
 import ThreeDimensional from '..'
 import Environment from './Environment'
 import {
+  hasIncludeImportMeshName,
+  importMeshLastName
 } from '../Utils/index'
+import {
+  sources
+} from '../resources/sources'
+import {
+  cameraLayers
+} from '../Camera'
 
 import createBoxMesh from './mesh/box'
 
@@ -25,7 +33,8 @@ export default class World extends EventEmitter {
     this.controls = {
     }
 
-    this.createScene()
+    this.createNormalScene()
+    this.createMachineScene()
 
     // 绑定事件
     this.bindEvent()
@@ -36,11 +45,27 @@ export default class World extends EventEmitter {
     })
   }
 
-  createScene() {
+  createNormalScene() {
     this.environment = new Environment()
 
     const boxMesh = createBoxMesh()
+    this.camera.setLayerByMesh([boxMesh], cameraLayers.STANDARD)
     this.scene.add(boxMesh)
+  }
+
+  createMachineScene() {
+    const gltf = this.resources[sources.machineGltf]
+    const meshList = []
+    gltf.scene.traverse(child => {
+      if (hasIncludeImportMeshName(child.name, 'machine-layer')) {
+        meshList.push(child)
+      }
+    })
+
+    this.camera.setLayerByMesh(meshList, cameraLayers.DISASSEMBLE)
+    for (const mesh of meshList) {
+      this.scene.add(mesh)
+    }
   }
 
   bindEvent() {}
