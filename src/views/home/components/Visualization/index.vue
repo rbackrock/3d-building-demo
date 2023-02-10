@@ -1,6 +1,7 @@
 <script setup>
 import {
   ref,
+  reactive,
   onMounted,
   onBeforeUnmount
 } from 'vue'
@@ -16,6 +17,7 @@ const viewType = {
   groundFloorView: 'groundFloorView',
   secondView: 'secondView',
   thirdView: 'thirdView',
+  fourView: 'fourView',
   disassembleView: 'disassembleView'
 }
 
@@ -61,11 +63,84 @@ function handlerChangeView(type) {
         <div class="text">假装有标题</div>
       </div>
 
-      <div class="left-container">
-        <div class="content">假装有数据</div>
+      <!-- 默认 -->
+      <div>
+        <div
+          class="left-container"
+          :class="{ show: currentType === viewType.defaultView, hide: currentType !== viewType.defaultView }"
+        >
+          <div class="content">默认-假装有数据</div>
+        </div>
+        <div
+          class="right-container"
+          :class="{ show: currentType === viewType.defaultView, hide: currentType !== viewType.defaultView }"
+        >
+          <div class="content">默认-假装有数据</div>
+        </div>
       </div>
-      <div class="right-container">
-        <div class="content">假装有数据</div>
+
+      <!-- 一层楼 -->
+      <div>
+        <div
+          class="left-container"
+          :class="{ show: currentType === viewType.groundFloorView, hide: currentType !== viewType.groundFloorView }"
+        >
+          <div class="content">默认-假装有数据</div>
+        </div>
+        <div
+          class="right-container"
+          :class="{ show: currentType === viewType.groundFloorView, hide: currentType !== viewType.groundFloorView }"
+        >
+          <div class="content">默认-假装有数据</div>
+        </div>
+      </div>
+
+      <!-- 二层楼 -->
+      <div>
+        <div
+          class="left-container"
+          :class="{ show: currentType === viewType.secondView, hide: currentType !== viewType.secondView }"
+        >
+          <div class="content">二层楼-假装有数据</div>
+        </div>
+        <div
+          class="right-container"
+          :class="{ show: currentType === viewType.secondView, hide: currentType !== viewType.secondView }"
+        >
+          <div class="content">二层楼-假装有数据</div>
+        </div>
+      </div>
+
+      <!-- 三层楼 -->
+      <div>
+        <div
+          class="left-container"
+          :class="{ show: currentType === viewType.thirdView, hide: currentType !== viewType.thirdView }"
+        >
+          <div class="content">三层楼-假装有数据</div>
+        </div>
+        <div
+          class="right-container"
+          :class="{ show: currentType === viewType.thirdView, hide: currentType !== viewType.thirdView }"
+        >
+          <div class="content">三层楼-假装有数据</div>
+        </div>
+      </div>
+
+      <!-- 四层楼 -->
+      <div>
+        <div
+          class="left-container"
+          :class="{ show: currentType === viewType.fourView, hide: currentType !== viewType.fourView }"
+        >
+          <div class="content">四层楼-假装有数据</div>
+        </div>
+        <div
+          class="right-container"
+          :class="{ show: currentType === viewType.fourView, hide: currentType !== viewType.fourView }"
+        >
+          <div class="content">四层楼-假装有数据</div>
+        </div>
       </div>
 
       <div class="bottom-buttons">
@@ -105,6 +180,15 @@ function handlerChangeView(type) {
               >
                 <div class="icon"></div>
                 <div class="text">三层楼</div>
+              </div>
+            </li>
+            <li class="item">
+              <div class="item-wrapper"
+                :class="{ active: viewType.fourView === currentType }"
+                @click="handlerChangeView(viewType.fourView)"
+              >
+                <div class="icon"></div>
+                <div class="text">四层楼</div>
               </div>
             </li>
             <li class="item">
@@ -195,9 +279,8 @@ function handlerChangeView(type) {
 
     .left-container {
       position: fixed;
-      left: 0;
       bottom: 0;
-      width: 16%;
+      width: 18%;
       height: calc(94vh);
       color: rgb(179, 203, 235);
 
@@ -205,6 +288,18 @@ function handlerChangeView(type) {
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 100% 100%;
+
+      transition: all 0.6s;
+
+      &.show {
+        left: 0;
+        opacity: 1;
+      }
+
+      &.hide {
+        left: -18%;
+        opacity: 0;
+      }
 
       .content {
         padding: 30px 0;
@@ -216,7 +311,7 @@ function handlerChangeView(type) {
       position: fixed;
       right: 0;
       bottom: 0;
-      width: 16%;
+      width: 18%;
       height: calc(94vh);
       color: rgb(179, 203, 235);
 
@@ -224,6 +319,18 @@ function handlerChangeView(type) {
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 100% 100%;
+
+      transition: all 0.6s;
+
+      &.show {
+        right: 0;
+        opacity: 1;
+      }
+
+      &.hide {
+        right: -18%;
+        opacity: 0;
+      }
 
       .content {
         padding: 30px 0;
