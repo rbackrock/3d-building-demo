@@ -177,7 +177,7 @@ export default class Camera {
   }
 
   update() {
-    console.log(this.activeCamera.position)
+    // console.log(this.activeCamera.position)
   }
 
   destroy() {

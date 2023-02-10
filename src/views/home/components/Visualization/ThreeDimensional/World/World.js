@@ -16,6 +16,7 @@ import {
 } from '../Camera'
 
 import createBoxMesh from './mesh/box'
+import Machine from './Controls/Machine'
 
 export default class World extends EventEmitter {
   constructor() {
@@ -31,6 +32,7 @@ export default class World extends EventEmitter {
 
     // 准备需要控制的 object3d 对象
     this.controls = {
+      machine: null
     }
 
     this.createNormalScene()
@@ -55,15 +57,25 @@ export default class World extends EventEmitter {
 
   createMachineScene() {
     const gltf = this.resources[sources.machineGltf]
-    const meshList = []
+    const meshListForScene = []
+    const meshListForLayers = []
     gltf.scene.traverse(child => {
-      if (hasIncludeImportMeshName(child.name, 'machine-layer')) {
-        meshList.push(child)
+      // 父
+      if (hasIncludeImportMeshName(child.name, 'machine-main')) {
+        this.controls.machine = new Machine(child)
+        meshListForScene.push(child)
+      }
+
+      // 子
+      if (hasIncludeImportMeshName(child.name, 'machine-main') ||
+          hasIncludeImportMeshName(child.name, 'machine-part')
+      ) {
+        meshListForLayers.push(child)
       }
     })
 
-    this.camera.setLayerByMesh(meshList, cameraLayers.DISASSEMBLE)
-    for (const mesh of meshList) {
+    this.camera.setLayerByMesh(meshListForLayers, cameraLayers.DISASSEMBLE)
+    for (const mesh of meshListForScene) {
       this.scene.add(mesh)
     }
   }
