@@ -8,14 +8,22 @@ export const cameraType = {
   DISASSEMBLE: 'disassemble_camera'
 }
 
-export const viewType = {
-  STANDARD: 'standard_view',
-  DISASSEMBLE: 'disassemble_view'
-}
-
 export const cameraLayers = {
   STANDARD: 0,
   DISASSEMBLE: 1
+}
+
+const viewPostion = {
+  STANDARD: {
+    x: -213.125,
+    y: 62.492,
+    z: 4.971
+  },
+  DISASSEMBLE: {
+    x: 0.32,
+    y: 6.81,
+    z: -12.67
+  }
 }
 
 export default class Camera {
@@ -26,6 +34,7 @@ export default class Camera {
     this.canvas = this.threeDimensional.canvas
     // 当前活动摄像机
     this.activeCamera = null
+    this.activeCameraType = cameraType.STANDARD
     // 当前活动摄像机的控制器，如果有的话
     this.activeControls = null
     this.cameraList = {
@@ -40,15 +49,6 @@ export default class Camera {
     this.setDefaultCamera()
     this.setDisassembleCamera()
     this.setActiveCamera(cameraType.STANDARD)
-
-    // 默认相机的相机位置
-    this.viewPostionList = {
-      [viewType.STANDARD]: {
-        x: this.activeCamera.position.x,
-        y: this.activeCamera.position.y,
-        z: this.activeCamera.position.z,
-      }
-    }
   }
 
   setDefaultCamera() {
@@ -58,7 +58,7 @@ export default class Camera {
       0.01,
       10000
     )
-    defaultCamera.position.set(-213.125, 62.492, 4.971)
+    defaultCamera.position.set(viewPostion.STANDARD.x, viewPostion.STANDARD.y, viewPostion.STANDARD.z)
     defaultCamera.name = cameraType.STANDARD
     this.scene.add(defaultCamera)
 
@@ -79,10 +79,10 @@ export default class Camera {
     const camera = new THREE.PerspectiveCamera(
       35,
       this.sizes.width / this.sizes.height,
-      0.01,
+      0.1,
       10000
     )
-    camera.position.set(0.32, 6.81, -12.67)
+    camera.position.set(viewPostion.DISASSEMBLE.x, viewPostion.DISASSEMBLE.y, viewPostion.DISASSEMBLE.z)
     camera.name = cameraType.DISASSEMBLE
     this.scene.add(camera)
 
@@ -107,14 +107,19 @@ export default class Camera {
    * @param {String} cameraName 摄像机名称
    */
   setActiveCamera(type) {
+    if (type === cameraType.STANDARD) {
+      this.cameraList[cameraType.STANDARD].camera.layers.set(cameraLayers.STANDARD)
+      this.cameraList[cameraType.STANDARD].camera.position.set(viewPostion.STANDARD.x, viewPostion.STANDARD.y, viewPostion.STANDARD.z)
+      this.cameraList[cameraType.STANDARD].camera.updateProjectionMatrix()
+    } else if (type === cameraType.DISASSEMBLE) {
+      this.cameraList[cameraType.DISASSEMBLE].camera.layers.set(cameraLayers.DISASSEMBLE)
+      this.cameraList[cameraType.DISASSEMBLE].camera.position.set(viewPostion.DISASSEMBLE.x, viewPostion.DISASSEMBLE.y, viewPostion.DISASSEMBLE.z)
+      this.cameraList[cameraType.DISASSEMBLE].camera.updateProjectionMatrix()
+    }
+
     this.activeCamera = this.cameraList[type].camera
     this.activeControls = this.cameraList[type].controls
-
-    if (type === cameraType.STANDARD) {
-      this.activeCamera.layers.set(cameraLayers.STANDARD)
-    } else if (type === cameraType.DISASSEMBLE) {
-      this.activeCamera.layers.set(cameraLayers.DISASSEMBLE)
-    }
+    this.activeControls.update()
   }
 
   /**
@@ -140,11 +145,11 @@ export default class Camera {
     }
     let end = {}
 
-    if (type === viewType.STANDARD) {
+    if (type === cameraType.STANDARD) {
       end = {
-        x: this.viewPostionList[viewType.STANDARD].x,
-        y: this.viewPostionList[viewType.STANDARD].y,
-        z: this.viewPostionList[viewType.STANDARD].z,
+        x: viewPostion.STANDARD.x,
+        y: viewPostion.STANDARD.y,
+        z: viewPostion.STANDARD.z,
       }
     }
     
@@ -172,9 +177,6 @@ export default class Camera {
   }
 
   update() {
-    if (this.activeControls) {
-      this.activeControls.update()
-    }
   }
 
   destroy() {
