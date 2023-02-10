@@ -20,9 +20,9 @@ const viewPostion = {
     z: 4.971
   },
   DISASSEMBLE: {
-    x: 0.32,
-    y: 6.81,
-    z: -12.67
+    x: 0.233,
+    y: 11.731,
+    z: -18.266
   }
 }
 
@@ -177,6 +177,7 @@ export default class Camera {
   }
 
   update() {
+    console.log(this.activeCamera.position)
   }
 
   destroy() {
