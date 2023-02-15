@@ -11,7 +11,7 @@ import GroundFloorViewStatistics from './components/GroundFloorViewStatistics/in
 import SecondFloorViewStatistics from './components/SecondFloorViewStatistics/index.vue'
 import ThirdFloorViewStatistics from './components/ThirdFloorViewStatistics/index.vue'
 import FourFloorViewStatistics from './components/FourFloorViewStatistics/index.vue'
-import Machinelabel from './componentsCss3d/Machinelabel/index.vue'
+import Machinelabel from './components3d/Machinelabel/index.vue'
 
 import load from './ThreeDimensional/resources/index'
 import ThreeDimensional from './ThreeDimensional'
