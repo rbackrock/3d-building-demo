@@ -1,10 +1,13 @@
 <script setup>
 import {
-  ref,
-  reactive,
   onMounted,
   onBeforeUnmount
 } from 'vue'
+
+import {
+  store,
+  viewType
+} from './sotre'
 
 import DefaultViewStatistics from './components/DefaultViewStatistics/index.vue'
 import GroundFloorViewStatistics from './components/GroundFloorViewStatistics/index.vue'
@@ -12,6 +15,7 @@ import SecondFloorViewStatistics from './components/SecondFloorViewStatistics/in
 import ThirdFloorViewStatistics from './components/ThirdFloorViewStatistics/index.vue'
 import FourFloorViewStatistics from './components/FourFloorViewStatistics/index.vue'
 import Machinelabel from './components3d/Machinelabel/index.vue'
+import FloorInfo from './components3d/FloorInfo/index.vue'
 
 import load from './ThreeDimensional/resources/index'
 import ThreeDimensional from './ThreeDimensional'
@@ -19,23 +23,12 @@ import { cameraType } from './ThreeDimensional/Camera'
 
 let threeDimensional = null
 let world = null
-const viewType = {
-  defaultView: 'defaultView',
-  groundFloorView: 'groundFloorView',
-  secondFloorView: 'secondView',
-  thirdFloorView: 'thirdView',
-  fourFloorView: 'fourView',
-  disassembleView: 'disassembleView'
-}
-
-const isLoading = ref(true)
-const currentType = ref(viewType.defaultView)
 
 onMounted(async () => {
   const resources = await load()
   threeDimensional = new ThreeDimensional(document.querySelector('canvas.webgl'), resources)
   world = threeDimensional.wolrd
-  isLoading.value = false
+  store.setIsloading(false)
 })
 
 onBeforeUnmount(() => {
@@ -46,7 +39,7 @@ onBeforeUnmount(() => {
 
 function handlerChangeView(type) {
   if (world) {
-    currentType.value = type
+    store.setCurrentViewType(type)
 
     if (type === viewType.disassembleView) {
       world.camera.setActiveCamera(cameraType.DISASSEMBLE)
@@ -80,27 +73,30 @@ function handlerChangeDisassemble(isDisassemble) {
 
       <!-- 默认 -->
       <DefaultViewStatistics
-        :is-view="currentType === viewType.defaultView"
+        :is-view="store.currentViewType.value === viewType.defaultView"
       />
 
       <!-- 一层楼 -->
+      <!-- <GroundFloorViewStatistics
+        :is-view="store.currentViewType === viewType.groundFloorView"
+      /> -->
       <GroundFloorViewStatistics
-      :is-view="currentType === viewType.groundFloorView"
+        :is-view="false"
       />
 
       <!-- 二层楼 -->
       <SecondFloorViewStatistics
-        :is-view="currentType === viewType.secondFloorView"
+        :is-view="store.currentViewType.value === viewType.secondFloorView"
       />
 
       <!-- 三层楼 -->
       <ThirdFloorViewStatistics
-        :is-view="currentType === viewType.thirdFloorView"
+        :is-view="store.currentViewType.value === viewType.thirdFloorView"
       />
 
       <!-- 四层楼 -->
       <FourFloorViewStatistics
-        :is-view="currentType === viewType.fourFloorView"
+        :is-view="store.currentViewType.value === viewType.fourFloorView"
       />
 
       <!-- 底部按钮 -->
@@ -109,7 +105,7 @@ function handlerChangeDisassemble(isDisassemble) {
           <ul class="list">
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.defaultView === currentType }"
+                :class="{ active: viewType.defaultView === store.currentViewType.value }"
                 @click="handlerChangeView(viewType.defaultView)"
               >
                 <div class="icon"></div>
@@ -118,7 +114,7 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.groundFloorView === currentType }"
+                :class="{ active: viewType.groundFloorView === store.currentViewType.value }"
                 @click="handlerChangeView(viewType.groundFloorView)"
               >
                 <div class="icon"></div>
@@ -127,7 +123,7 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.secondFloorView === currentType }"
+                :class="{ active: viewType.secondFloorView === store.currentViewType.value }"
                 @click="handlerChangeView(viewType.secondFloorView)"
               >
                 <div class="icon"></div>
@@ -136,7 +132,7 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.thirdFloorView === currentType }"
+                :class="{ active: viewType.thirdFloorView === store.currentViewType.value }"
                 @click="handlerChangeView(viewType.thirdFloorView)"
               >
                 <div class="icon"></div>
@@ -145,7 +141,7 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.fourFloorView === currentType }"
+                :class="{ active: viewType.fourFloorView === store.currentViewType.value }"
                 @click="handlerChangeView(viewType.fourFloorView)"
               >
                 <div class="icon"></div>
@@ -154,7 +150,7 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.disassembleView === currentType }"
+                :class="{ active: viewType.disassembleView === store.currentViewType.value }"
                 @click="handlerChangeView(viewType.disassembleView)"
               >
                 <div class="icon"></div>
@@ -166,7 +162,7 @@ function handlerChangeDisassemble(isDisassemble) {
       </div>
 
       <!-- 拆建按钮组 -->
-      <div v-show="viewType.disassembleView === currentType" class="bottom-buttons-disassemble">
+      <div v-show="viewType.disassembleView === store.currentViewType.value" class="bottom-buttons-disassemble">
         <div class="buttons-wrapper">
           <ul class="list">
             <li class="item">
@@ -191,10 +187,11 @@ function handlerChangeDisassemble(isDisassemble) {
     </div>
 
     <!-- loading -->
-    <div class="loading-3d" :class="{ close: !isLoading }" id="loading-3d">资源加载中...</div>
+    <div class="loading-3d" :class="{ close: !store.isLoading.value }" id="loading-3d">资源加载中...</div>
 
-    <!-- machine-label -->
+    <!-- 3d -->
     <Machinelabel />
+    <FloorInfo />
   </div>
 </template>
 

@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "echarts": "^5.4.1",
     "gsap": "^3.11.4",
     "lil-gui": "^0.17.0",
     "pinia": "^2.0.30",

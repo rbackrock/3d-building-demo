@@ -15,9 +15,9 @@ export const cameraLayers = {
 
 const viewPostion = {
   STANDARD: {
-    x: -213.125,
-    y: 62.492,
-    z: 4.971
+    x: -171.285,
+    y: 65.753,
+    z: 358.077
   },
   DISASSEMBLE: {
     x: 0.233,
