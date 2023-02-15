@@ -3,7 +3,8 @@
   import {
     onMounted,
     onBeforeUnmount,
-    watch
+    watch,
+    nextTick
   } from 'vue'
   import {
     store
@@ -12,10 +13,14 @@
   let chart1 = null
   let chart2 = null
 
-  watch(store.isLoading, (newIsLoadingValue, oldIsLoadingValue) => {
+  watch(store.isLoading, async (newIsLoadingValue, oldIsLoadingValue) => {
     if (newIsLoadingValue === false) {
       initChart1()
       initChart2()
+
+      await nextTick()
+      chart1.resize()
+      chart2.resize()
     }
   })
 
@@ -260,7 +265,6 @@
   }
 
   onMounted(() => {
-    console.log(store)
   })
 
   onBeforeUnmount(() => {
