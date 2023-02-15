@@ -6,6 +6,12 @@ import {
   onBeforeUnmount
 } from 'vue'
 
+import DefaultViewStatistics from './components/DefaultViewStatistics/index.vue'
+import GroundFloorViewStatistics from './components/GroundFloorViewStatistics/index.vue'
+import SecondFloorViewStatistics from './components/SecondFloorViewStatistics/index.vue'
+import ThirdFloorViewStatistics from './components/ThirdFloorViewStatistics/index.vue'
+import FourFloorViewStatistics from './components/FourFloorViewStatistics/index.vue'
+
 import load from './ThreeDimensional/resources/index'
 import ThreeDimensional from './ThreeDimensional'
 import { cameraType } from './ThreeDimensional/Camera'
@@ -72,85 +78,31 @@ function handlerChangeDisassemble(isDisassemble) {
       </div>
 
       <!-- 默认 -->
-      <div>
-        <div
-          class="left-container"
-          :class="{ show: currentType === viewType.defaultView, hide: currentType !== viewType.defaultView }"
-        >
-          <div class="content">默认-假装有数据</div>
-        </div>
-        <div
-          class="right-container"
-          :class="{ show: currentType === viewType.defaultView, hide: currentType !== viewType.defaultView }"
-        >
-          <div class="content">默认-假装有数据</div>
-        </div>
-      </div>
+      <DefaultViewStatistics
+        :is-view="currentType === viewType.defaultView"
+      />
 
       <!-- 一层楼 -->
-      <div>
-        <div
-          class="left-container"
-          :class="{ show: currentType === viewType.groundFloorView, hide: currentType !== viewType.groundFloorView }"
-        >
-          <div class="content">默认-假装有数据</div>
-        </div>
-        <div
-          class="right-container"
-          :class="{ show: currentType === viewType.groundFloorView, hide: currentType !== viewType.groundFloorView }"
-        >
-          <div class="content">默认-假装有数据</div>
-        </div>
-      </div>
+      <GroundFloorViewStatistics
+      :is-view="currentType === viewType.groundFloorView"
+      />
 
       <!-- 二层楼 -->
-      <div>
-        <div
-          class="left-container"
-          :class="{ show: currentType === viewType.secondFloorView, hide: currentType !== viewType.secondFloorView }"
-        >
-          <div class="content">二层楼-假装有数据</div>
-        </div>
-        <div
-          class="right-container"
-          :class="{ show: currentType === viewType.secondFloorView, hide: currentType !== viewType.secondFloorView }"
-        >
-          <div class="content">二层楼-假装有数据</div>
-        </div>
-      </div>
+      <SecondFloorViewStatistics
+        :is-view="currentType === viewType.secondFloorView"
+      />
 
       <!-- 三层楼 -->
-      <div>
-        <div
-          class="left-container"
-          :class="{ show: currentType === viewType.thirdFloorView, hide: currentType !== viewType.thirdFloorView }"
-        >
-          <div class="content">三层楼-假装有数据</div>
-        </div>
-        <div
-          class="right-container"
-          :class="{ show: currentType === viewType.thirdFloorView, hide: currentType !== viewType.thirdFloorView }"
-        >
-          <div class="content">三层楼-假装有数据</div>
-        </div>
-      </div>
+      <ThirdFloorViewStatistics
+        :is-view="currentType === viewType.thirdFloorView"
+      />
 
       <!-- 四层楼 -->
-      <div>
-        <div
-          class="left-container"
-          :class="{ show: currentType === viewType.fourFloorView, hide: currentType !== viewType.fourFloorView }"
-        >
-          <div class="content">四层楼-假装有数据</div>
-        </div>
-        <div
-          class="right-container"
-          :class="{ show: currentType === viewType.fourFloorView, hide: currentType !== viewType.fourFloorView }"
-        >
-          <div class="content">四层楼-假装有数据</div>
-        </div>
-      </div>
+      <FourFloorViewStatistics
+        :is-view="currentType === viewType.fourFloorView"
+      />
 
+      <!-- 底部按钮 -->
       <div class="bottom-buttons">
         <div class="buttons-wrapper">
           <ul class="list">
@@ -374,67 +326,6 @@ function handlerChangeDisassemble(isDisassemble) {
         text-align: center;
         color: #fff;
         font-size: 2em;
-      }
-    }
-
-    .left-container {
-      position: fixed;
-      bottom: 0;
-      width: 18%;
-      height: calc(94vh);
-      color: rgb(179, 203, 235);
-
-      background-image: url(./images/left.png);
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-size: 100% 100%;
-
-      transition: all 0.6s;
-
-      &.show {
-        left: 0;
-        opacity: 1;
-      }
-
-      &.hide {
-        left: -18%;
-        opacity: 0;
-      }
-
-      .content {
-        padding: 30px 0;
-        text-align: center;
-      }
-    }
-
-    .right-container{
-      position: fixed;
-      right: 0;
-      bottom: 0;
-      width: 18%;
-      height: calc(94vh);
-      color: rgb(179, 203, 235);
-
-      background-image: url(./images/right.png);
-      background-repeat: no-repeat;
-      background-position: center center;
-      background-size: 100% 100%;
-
-      transition: all 0.6s;
-
-      &.show {
-        right: 0;
-        opacity: 1;
-      }
-
-      &.hide {
-        right: -18%;
-        opacity: 0;
-      }
-
-      .content {
-        padding: 30px 0;
-        text-align: center;
       }
     }
 
