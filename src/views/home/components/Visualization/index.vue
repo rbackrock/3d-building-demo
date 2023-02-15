@@ -15,9 +15,9 @@ let world = null
 const viewType = {
   defaultView: 'defaultView',
   groundFloorView: 'groundFloorView',
-  secondView: 'secondView',
-  thirdView: 'thirdView',
-  fourView: 'fourView',
+  secondFloorView: 'secondView',
+  thirdFloorView: 'thirdView',
+  fourFloorView: 'fourView',
   disassembleView: 'disassembleView'
 }
 
@@ -107,13 +107,13 @@ function handlerChangeDisassemble(isDisassemble) {
       <div>
         <div
           class="left-container"
-          :class="{ show: currentType === viewType.secondView, hide: currentType !== viewType.secondView }"
+          :class="{ show: currentType === viewType.secondFloorView, hide: currentType !== viewType.secondFloorView }"
         >
           <div class="content">二层楼-假装有数据</div>
         </div>
         <div
           class="right-container"
-          :class="{ show: currentType === viewType.secondView, hide: currentType !== viewType.secondView }"
+          :class="{ show: currentType === viewType.secondFloorView, hide: currentType !== viewType.secondFloorView }"
         >
           <div class="content">二层楼-假装有数据</div>
         </div>
@@ -123,13 +123,13 @@ function handlerChangeDisassemble(isDisassemble) {
       <div>
         <div
           class="left-container"
-          :class="{ show: currentType === viewType.thirdView, hide: currentType !== viewType.thirdView }"
+          :class="{ show: currentType === viewType.thirdFloorView, hide: currentType !== viewType.thirdFloorView }"
         >
           <div class="content">三层楼-假装有数据</div>
         </div>
         <div
           class="right-container"
-          :class="{ show: currentType === viewType.thirdView, hide: currentType !== viewType.thirdView }"
+          :class="{ show: currentType === viewType.thirdFloorView, hide: currentType !== viewType.thirdFloorView }"
         >
           <div class="content">三层楼-假装有数据</div>
         </div>
@@ -139,13 +139,13 @@ function handlerChangeDisassemble(isDisassemble) {
       <div>
         <div
           class="left-container"
-          :class="{ show: currentType === viewType.fourView, hide: currentType !== viewType.fourView }"
+          :class="{ show: currentType === viewType.fourFloorView, hide: currentType !== viewType.fourFloorView }"
         >
           <div class="content">四层楼-假装有数据</div>
         </div>
         <div
           class="right-container"
-          :class="{ show: currentType === viewType.fourView, hide: currentType !== viewType.fourView }"
+          :class="{ show: currentType === viewType.fourFloorView, hide: currentType !== viewType.fourFloorView }"
         >
           <div class="content">四层楼-假装有数据</div>
         </div>
@@ -174,8 +174,8 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.secondView === currentType }"
-                @click="handlerChangeView(viewType.secondView)"
+                :class="{ active: viewType.secondFloorView === currentType }"
+                @click="handlerChangeView(viewType.secondFloorView)"
               >
                 <div class="icon"></div>
                 <div class="text">二层楼</div>
@@ -183,8 +183,8 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.thirdView === currentType }"
-                @click="handlerChangeView(viewType.thirdView)"
+                :class="{ active: viewType.thirdFloorView === currentType }"
+                @click="handlerChangeView(viewType.thirdFloorView)"
               >
                 <div class="icon"></div>
                 <div class="text">三层楼</div>
@@ -192,8 +192,8 @@ function handlerChangeDisassemble(isDisassemble) {
             </li>
             <li class="item">
               <div class="item-wrapper"
-                :class="{ active: viewType.fourView === currentType }"
-                @click="handlerChangeView(viewType.fourView)"
+                :class="{ active: viewType.fourFloorView === currentType }"
+                @click="handlerChangeView(viewType.fourFloorView)"
               >
                 <div class="icon"></div>
                 <div class="text">四层楼</div>
@@ -557,6 +557,7 @@ function handlerChangeDisassemble(isDisassemble) {
   // height: 100%;
   color: #00deff;
   display: none;
+  cursor: pointer;
 
   &.visible {
     display: block;
