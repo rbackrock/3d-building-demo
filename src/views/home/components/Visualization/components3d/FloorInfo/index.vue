@@ -275,7 +275,7 @@
 </script>
 
 <template>
-  <div id="floor-info-container-list-hook" class="floor-info-container" :class="{ hide: store.isLoading === true }">
+  <div id="floor-info-container-list-hook" class="floor-info-container" :class="{ hide: store.isLoading.value === true }">
     <div class="floor-info-container-wrapper">
       <table class="list-container">
         <tr>
