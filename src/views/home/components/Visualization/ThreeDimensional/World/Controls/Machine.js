@@ -66,6 +66,7 @@ export default class Machine {
     this.machine.base.mesh.add(baseHtmlObject)
   }
 
+  // 拆解
   disassemble() {
     if (this.isDisassemble === false) {
       const {
@@ -100,11 +101,16 @@ export default class Machine {
     }
   }
 
+  // 合并
   combine() {
     const {
       shell,
       base
     } = this.machine
+
+    document.querySelector('#machine-core-label-hook').classList.remove('visible')
+    document.querySelector('#machine-shell-label-hook').classList.remove('visible')
+    document.querySelector('#machine-base-label-hook').classList.remove('visible')
 
     this.shellMeshCombineAnimation = gsap.to(shell.mesh.position, {
       x: shell.originPosition.x,
@@ -112,8 +118,6 @@ export default class Machine {
       z: shell.originPosition.z,
       duration: 0.6,
       onComplete() {
-        document.querySelector('#machine-core-label-hook').classList.remove('visible')
-        document.querySelector('#machine-shell-label-hook').classList.remove('visible')
       }
     })
 
@@ -123,7 +127,6 @@ export default class Machine {
       z: base.originPosition.z,
       duration: 0.6,
       onComplete() {
-        document.querySelector('#machine-base-label-hook').classList.remove('visible')
       }
     })
 
