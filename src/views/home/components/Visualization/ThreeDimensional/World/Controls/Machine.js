@@ -47,6 +47,15 @@ export default class Machine {
 
     // 是否已经展开
     this.isDisassemble = false
+
+    // tmp
+    // console.log(this.mesh)
+    // this.mesh.material.transparent = true
+    // this.mesh.material.opacity = 0.3
+
+    // this.mesh.onAfterRender = (renderer, scene, camera, geometry, material, group) => {
+    //   console.log(material)
+    // }
   }
 
   setLabel() {

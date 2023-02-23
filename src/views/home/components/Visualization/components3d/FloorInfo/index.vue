@@ -319,12 +319,6 @@
       <div id="chart-2-hook" class="chart-2" />
     </div>
   </div>
-
-  <!-- <div id="floor-info-container-chart-hook" class="floor-info-container" :class="{ hide: store.isLoading === true }">
-    <div class="floor-info-container-wrapper">
-      <div id="chart-1" />
-    </div>
-  </div> -->
 </template>
 
 <style lang="less" scoped>

@@ -31,12 +31,13 @@ export default class World extends EventEmitter {
     this.sizes = this.threeDimensional.sizes
     this.outlinePass = this.threeDimensional.outlinePass 
     this.resources = this.threeDimensional.resources
+    this.environment = new Environment()
 
     // 准备需要控制的 object3d 对象
     this.controls = {
-      machine: null,
-      floorInfoListPlane: null,
-      floorInfoChartPlane: null
+      machine: null
+      // floorInfoListPlane: null,
+      // floorInfoChartPlane: null
     }
 
     this.createNormalScene()
@@ -52,20 +53,42 @@ export default class World extends EventEmitter {
   }
 
   createNormalScene() {
-    this.environment = new Environment()
+    
 
-    const boxMesh = createBoxMesh()
-    this.camera.setLayerByMesh([boxMesh], cameraLayers.STANDARD)
+    // const boxMesh = createBoxMesh()
+    // this.camera.setLayerByMesh([boxMesh], cameraLayers.STANDARD)
 
-    const floorInfoPlaneListMesh = createFloorInfoPlaneListMesh()
-    this.controls.floorInfoListPlane = new FloorInfoPlaneList(floorInfoPlaneListMesh)
-    boxMesh.add(floorInfoPlaneListMesh)
+    // const floorInfoPlaneListMesh = createFloorInfoPlaneListMesh()
+    // this.controls.floorInfoListPlane = new FloorInfoPlaneList(floorInfoPlaneListMesh)
+    // boxMesh.add(floorInfoPlaneListMesh)
 
     // const floorInfoPlaneChartMesh = createFloorInfoPlaneChartMesh()
     // this.controls.floorInfoChartPlane = new FloorInfoPlaneChart(floorInfoPlaneChartMesh)
     // boxMesh.add(floorInfoPlaneChartMesh)
 
-    this.scene.add(boxMesh)
+    // this.scene.add(boxMesh)
+
+    const gltf = this.resources[sources.sceneGltf]
+    console.log(gltf)
+    const meshList = []
+    const children = [...gltf.scene.children]
+    // gltf.scene.traverse(child => {
+    //   // this.scene.add(child)
+    //   // console.log(child)
+    //   if (child.type === 'Mesh') {
+    //     meshList.push(child)
+    //   }
+    // })
+
+    // for (const mesh of meshList) {
+    //   this.scene.add(mesh)
+    // }
+    // for (const mesh of children) {
+    //   if (mesh.type === 'Mesh')
+    //     this.scene.add(mesh)
+    // }
+    // console.log(children)
+    this.scene.add(gltf.scene)
   }
 
   createMachineScene() {

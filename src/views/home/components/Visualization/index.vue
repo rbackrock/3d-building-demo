@@ -77,9 +77,6 @@ function handlerChangeDisassemble(isDisassemble) {
       />
 
       <!-- 一层楼 -->
-      <!-- <GroundFloorViewStatistics
-        :is-view="store.currentViewType === viewType.groundFloorView"
-      /> -->
       <GroundFloorViewStatistics
         :is-view="false"
       />
@@ -191,7 +188,7 @@ function handlerChangeDisassemble(isDisassemble) {
 
     <!-- 3d -->
     <Machinelabel />
-    <FloorInfo />
+    <!-- <FloorInfo /> -->
   </div>
 </template>
 

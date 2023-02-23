@@ -81,8 +81,6 @@ export class ThreeDimensional {
     this.postprocessingRender.update()
     this.css2dRender.update()
     this.css3dRender.update()
-
-    //controls
   }
 
   destroy() {

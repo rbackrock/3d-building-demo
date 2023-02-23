@@ -15,9 +15,9 @@ export const cameraLayers = {
 
 const viewPostion = {
   STANDARD: {
-    x: -171.285,
-    y: 65.753,
-    z: 358.077
+    x: -15.003756960053805,
+    y: 9.320716641159029,
+    z: 29.331347332074664
   },
   DISASSEMBLE: {
     x: 0.233,
@@ -55,7 +55,7 @@ export default class Camera {
     const defaultCamera = new THREE.PerspectiveCamera(
       35,
       this.sizes.width / this.sizes.height,
-      0.01,
+      0.001,
       10000
     )
     defaultCamera.position.set(viewPostion.STANDARD.x, viewPostion.STANDARD.y, viewPostion.STANDARD.z)
