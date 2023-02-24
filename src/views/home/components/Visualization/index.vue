@@ -15,7 +15,7 @@ import SecondFloorViewStatistics from './components/SecondFloorViewStatistics/in
 import ThirdFloorViewStatistics from './components/ThirdFloorViewStatistics/index.vue'
 import FourFloorViewStatistics from './components/FourFloorViewStatistics/index.vue'
 import Machinelabel from './components3d/Machinelabel/index.vue'
-import FloorInfo from './components3d/FloorInfo/index.vue'
+import ScienceBuilding from './components3d/ScienceBuilding/index.vue'
 
 import load from './ThreeDimensional/resources/index'
 import ThreeDimensional from './ThreeDimensional'
@@ -186,9 +186,11 @@ function handlerChangeDisassemble(isDisassemble) {
     <!-- loading -->
     <div class="loading-3d" :class="{ close: !store.isLoading.value }" id="loading-3d">资源加载中...</div>
 
+    <!-- main building info css3 render -->
+    <ScienceBuilding />
+
     <!-- 3d -->
     <Machinelabel />
-    <!-- <FloorInfo /> -->
   </div>
 </template>
 

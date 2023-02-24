@@ -1,8 +1,11 @@
+import * as THREE from 'three'
+
 import EventEmitter from '../Utils/EventEmitter'
 import ThreeDimensional from '..'
 import Environment from './Environment'
 import {
-  hasIncludeImportMeshName
+  hasIncludeImportMeshName,
+  importMeshLastName
 } from '../Utils/index'
 import {
   sources
@@ -12,13 +15,11 @@ import {
 } from '../Camera'
 
 // mesh
-import createBoxMesh from './mesh/box'
-import createFloorInfoPlaneListMesh from './mesh/floorInfoPlaneListMesh'
-import createFloorInfoPlaneChartMesh from './mesh/floorInfoPlaneChartMesh'
+import createScienceBuildingInfoMesh from './mesh/scienceBuildingInfoMesh'
+
 // controls
 import Machine from './Controls/Machine'
-import FloorInfoPlaneList from './Controls/FloorInfoPlaneList'
-import FloorInfoPlaneChart from './Controls/FloorInfoPlaneChart'
+import ScienceBuildingInfo from './Controls/ScienceBuildingInfo'
 
 export default class World extends EventEmitter {
   constructor() {
@@ -35,9 +36,8 @@ export default class World extends EventEmitter {
 
     // 准备需要控制的 object3d 对象
     this.controls = {
-      machine: null
-      // floorInfoListPlane: null,
-      // floorInfoChartPlane: null
+      machine: null,
+      scienceBuildingInfo: null
     }
 
     this.createNormalScene()
@@ -53,41 +53,19 @@ export default class World extends EventEmitter {
   }
 
   createNormalScene() {
-    
-
-    // const boxMesh = createBoxMesh()
-    // this.camera.setLayerByMesh([boxMesh], cameraLayers.STANDARD)
-
-    // const floorInfoPlaneListMesh = createFloorInfoPlaneListMesh()
-    // this.controls.floorInfoListPlane = new FloorInfoPlaneList(floorInfoPlaneListMesh)
-    // boxMesh.add(floorInfoPlaneListMesh)
-
-    // const floorInfoPlaneChartMesh = createFloorInfoPlaneChartMesh()
-    // this.controls.floorInfoChartPlane = new FloorInfoPlaneChart(floorInfoPlaneChartMesh)
-    // boxMesh.add(floorInfoPlaneChartMesh)
-
-    // this.scene.add(boxMesh)
-
     const gltf = this.resources[sources.sceneGltf]
     console.log(gltf)
-    const meshList = []
-    const children = [...gltf.scene.children]
-    // gltf.scene.traverse(child => {
-    //   // this.scene.add(child)
-    //   // console.log(child)
-    //   if (child.type === 'Mesh') {
-    //     meshList.push(child)
-    //   }
-    // })
-
-    // for (const mesh of meshList) {
-    //   this.scene.add(mesh)
-    // }
-    // for (const mesh of children) {
-    //   if (mesh.type === 'Mesh')
-    //     this.scene.add(mesh)
-    // }
-    // console.log(children)
+    gltf.scene.traverse(child => {
+      if (child.name === 'scienceBuildingMarker') {
+        const scienceBuildingMarkerPosition = new THREE.Vector3()
+        scienceBuildingMarkerPosition.copy(child.position)
+        const scienceBuildingMesh = createScienceBuildingInfoMesh(scienceBuildingMarkerPosition)
+        const scienceBuildingInfo = new ScienceBuildingInfo(scienceBuildingMesh)
+        
+        this.controls.scienceBuildingInfo = scienceBuildingInfo
+        this.scene.add(scienceBuildingMesh)
+      }
+    })
     this.scene.add(gltf.scene)
   }
 
