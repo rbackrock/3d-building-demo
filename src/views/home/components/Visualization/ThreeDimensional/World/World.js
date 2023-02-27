@@ -5,7 +5,7 @@ import ThreeDimensional from '..'
 import Environment from './Environment'
 import {
   hasIncludeImportMeshName,
-  importMeshLastName
+  
 } from '../Utils/index'
 import {
   sources
@@ -13,9 +13,6 @@ import {
 import {
   cameraLayers
 } from '../Camera'
-
-// mesh
-import createScienceBuildingInfoMesh from './mesh/scienceBuildingInfoMesh'
 
 // controls
 import Machine from './Controls/Machine'
@@ -54,19 +51,21 @@ export default class World extends EventEmitter {
 
   createNormalScene() {
     const gltf = this.resources[sources.sceneGltf]
-    console.log(gltf)
+    // pick up
+    let scienceBuildingMarkerMesh = null
+    const groundFloorMeshList  = []
+
     gltf.scene.traverse(child => {
       if (child.name === 'scienceBuildingMarker') {
-        const scienceBuildingMarkerPosition = new THREE.Vector3()
-        scienceBuildingMarkerPosition.copy(child.position)
-        const scienceBuildingMesh = createScienceBuildingInfoMesh(scienceBuildingMarkerPosition)
-        const scienceBuildingInfo = new ScienceBuildingInfo(scienceBuildingMesh)
-        
-        this.controls.scienceBuildingInfo = scienceBuildingInfo
-        this.scene.add(scienceBuildingMesh)
+        scienceBuildingMarkerMesh = child
       }
     })
     this.scene.add(gltf.scene)
+
+    // 控制科技楼外部信息图表
+    const scienceBuildingInfoMesh = new ScienceBuildingInfo(scienceBuildingMarkerMesh)
+    this.controls.scienceBuildingInfo = scienceBuildingInfoMesh
+    this.scene.add(scienceBuildingInfoMesh.getScienceBuildingMesh())
   }
 
   createMachineScene() {

@@ -1,13 +1,48 @@
 import * as THREE from 'three'
 
 /**
- * 在 Blender 中为需要操作的元素命名，格式为{名称 + 标记符号},例如，tree#1, tree#2, tree#3 方便获取
- * @param {String} name 当前模型元素名称
- * @param {String} includeName 包含的元素名称
+ * 在 Blender 中为需要操作的网格命名，格式为{名称 + 标记符号},例如，tree#1, tree#2, tree#3 方便获取
+ * 该方法为了判断是否是想要的网格
+ * @param {String} meshName 当前网格元素名称
+ * @param {String} includeName 包含的网格名称
  * @param {String} markSymbol 标记字符
  */
-export function hasIncludeImportMeshName(name, includeName, markSymbol = '#') {
-  return name.indexOf(`${includeName}${markSymbol}`) !== -1
+export function hasIncludeImportMeshName(meshName, includeName, markSymbol = '#') {
+  return meshName.indexOf(`${includeName}${markSymbol}`) !== -1
+}
+
+/**
+ * 批量判断是否是想要的网格
+ * @param {String} meshName 
+ * @param {Array} includeNameList 
+ * @param {String} markSymbol 
+ */
+export function hasIncludeImportMeshNameBatch(meshName, includeNameList, markSymbol = '#') {
+  for (let i = 0; i < includeNameList.length; i++) {
+    if (meshName.indexOf(`${includeNameList[i]}${markSymbol}`) !== -1) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * 通过自定义属性获取模型元素
+ * @param {String} meshPropertyValue  模型物体属性值
+ * @param {String} includePropertyValue 想要获取的属性值
+ */
+export function hasIncludeImportMeshNameByProperty(meshPropertyValue, includePropertyValue) {
+  return meshPropertyValue === includePropertyValue
+}
+
+/**
+ * 通过自定义属性批量获取模型元素
+ * @param {String} meshPropertyValue 当前模型自定义属性类型值
+ * @param {Array} includePropertyValueList 需要获取的类型名称列表
+ */
+export function hasIncludeImportMeshNameBatchByProperty(meshPropertyValue, includePropertyValueList) {
+  return includePropertyValueList.includes(meshPropertyValue)
 }
 
 /**

@@ -10,7 +10,8 @@ export const cameraType = {
 
 export const cameraLayers = {
   STANDARD: 0,
-  DISASSEMBLE: 1
+  DISASSEMBLE: 1,
+  GROUND_FLOOR: 2
 }
 
 const viewPostion = {
@@ -46,12 +47,12 @@ export default class Camera {
     }
 
     // 当前活动摄像机
-    this.setDefaultCamera()
-    this.setDisassembleCamera()
+    this.addDefaultCamera()
+    this.addDisassembleCamera()
     this.setActiveCamera(cameraType.STANDARD)
   }
 
-  setDefaultCamera() {
+  addDefaultCamera() {
     const defaultCamera = new THREE.PerspectiveCamera(
       35,
       this.sizes.width / this.sizes.height,
@@ -64,8 +65,6 @@ export default class Camera {
 
     // 默认相机拥有的控制器
     const controls = new OrbitControls(defaultCamera, this.canvas)
-    // controls.enableDamping = true
-    // controls.maxPolarAngle = Math.PI / 180 * 75
     controls.maxPolarAngle = Math.PI / 180 * 90
 
     this.cameraList[cameraType.STANDARD] = {
@@ -75,7 +74,7 @@ export default class Camera {
   }
 
   // 拆解使用得相机
-  setDisassembleCamera() {
+  addDisassembleCamera() {
     const camera = new THREE.PerspectiveCamera(
       35,
       this.sizes.width / this.sizes.height,
