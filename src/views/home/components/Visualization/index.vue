@@ -29,6 +29,8 @@ onMounted(async () => {
   threeDimensional = new ThreeDimensional(document.querySelector('canvas.webgl'), resources)
   world = threeDimensional.wolrd
   store.setIsloading(false)
+
+  world.setActiveDefaultView()
 })
 
 onBeforeUnmount(() => {
@@ -43,9 +45,13 @@ function handlerChangeView(type) {
     store.setCurrentViewType(type)
 
     if (type === viewType.disassembleView) {
-      world.camera.setActiveCamera(cameraType.DISASSEMBLE)
-    } else {
-      world.camera.setActiveCamera(cameraType.STANDARD)
+      // world.camera.setActiveCamera(cameraType.DISASSEMBLE)
+      world.setActiveMachineView()
+    } else if (type === viewType.defaultView) {
+      // world.camera.setActiveCamera(cameraType.STANDARD)
+      world.setActiveDefaultView()
+    } else if (type === viewType.groundFloorView) {
+      world.setActiveGroundFloor()
     }
   }
 }

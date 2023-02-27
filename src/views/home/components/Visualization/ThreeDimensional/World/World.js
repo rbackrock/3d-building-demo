@@ -5,19 +5,21 @@ import ThreeDimensional from '..'
 import Environment from './Environment'
 import {
   hasIncludeImportMeshName,
-  
+  importMeshLastName
 } from '../Utils/index'
 import {
   sources
 } from '../resources/sources'
 import {
   cameraType,
-  cameraLayers
+  cameraLayers,
+  setLayerByMesh
 } from '../Camera'
 
 // controls
 import Machine from './Controls/Machine'
 import ScienceBuildingInfo from './Controls/ScienceBuildingInfo'
+import GroundFloor from './Controls/GroundFloor'
 
 export default class World extends EventEmitter {
   constructor() {
@@ -60,6 +62,22 @@ export default class World extends EventEmitter {
       if (child.name === 'scienceBuildingMarker') {
         scienceBuildingMarkerMesh = child
       }
+
+      if (
+        hasIncludeImportMeshName(child.name, 'chairF1') || 
+        hasIncludeImportMeshName(child.name, 'desktopF1') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingBoxF1') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingCupboardF1') || 
+        hasIncludeImportMeshName(child.name, 'fragmentF1') || 
+        hasIncludeImportMeshName(child.name, 'innerWallF1') || 
+        hasIncludeImportMeshName(child.name, 'smogResponseF1') || 
+        hasIncludeImportMeshName(child.name, 'windowF1') || 
+        // ---
+        (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
+        (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
+      ) {
+        groundFloorMeshList.push(child)
+      }
     })
     this.scene.add(gltf.scene)
 
@@ -67,31 +85,85 @@ export default class World extends EventEmitter {
     const scienceBuildingInfoMesh = new ScienceBuildingInfo(scienceBuildingMarkerMesh)
     this.controls.scienceBuildingInfo = scienceBuildingInfoMesh
     this.scene.add(scienceBuildingInfoMesh.getScienceBuildingMesh())
+
+    // 一层楼
+    this.controls.groundFloor = new GroundFloor(groundFloorMeshList)
   }
 
   createMachineScene() {
     const gltf = this.resources[sources.machineGltf]
-    const meshListForScene = []
-    const meshListForLayers = []
+    let machineMainMesh = null
+    const machineMeshForLayer = []
+
     gltf.scene.traverse(child => {
-      // 父
       if (hasIncludeImportMeshName(child.name, 'machine-main')) {
-        this.controls.machine = new Machine(child)
-        meshListForScene.push(child)
+        machineMainMesh = child
       }
 
-      // 子
-      if (hasIncludeImportMeshName(child.name, 'machine-main') ||
-          hasIncludeImportMeshName(child.name, 'machine-part')
+      if (
+        hasIncludeImportMeshName(child.name, 'machine-main') ||
+        hasIncludeImportMeshName(child.name, 'machine-part')
       ) {
-        meshListForLayers.push(child)
+        machineMeshForLayer.push(child)
       }
     })
 
-    this.camera.setLayerByMesh(meshListForLayers, cameraLayers[cameraType.DISASSEMBLE])
-    for (const mesh of meshListForScene) {
-      this.scene.add(mesh)
-    }
+    // set controls
+    this.controls.machine = new Machine(machineMainMesh)
+    setLayerByMesh(machineMeshForLayer, cameraLayers[cameraType.DISASSEMBLE])
+
+    this.scene.add(machineMainMesh)
+  }
+
+  setActiveMachineView() {
+    this.camera.setActiveCamera(cameraType.DISASSEMBLE)
+  }
+
+  setActiveDefaultView() {
+    this.scene.traverse(child => {
+      if (
+        hasIncludeImportMeshName(child.name, 'machine-main') === false &&
+        hasIncludeImportMeshName(child.name, 'machine-part') === false
+      ) {
+        child.layers.set(cameraLayers[cameraType.STANDARD])
+      }
+    })
+
+    this.camera.setActiveCamera(cameraType.STANDARD)
+  }
+
+  setActiveGroundFloor() {
+    let controlsTarget = new THREE.Vector3()
+    this.scene.traverse(child => {
+      if (
+        hasIncludeImportMeshName(child.name, 'machine-main') === false &&
+        hasIncludeImportMeshName(child.name, 'machine-part') === false
+      ) {
+
+        if (
+          hasIncludeImportMeshName(child.name, 'chairF1') || 
+          hasIncludeImportMeshName(child.name, 'desktopF1') || 
+          hasIncludeImportMeshName(child.name, 'fireFightingBoxF1') || 
+          hasIncludeImportMeshName(child.name, 'fireFightingCupboardF1') || 
+          hasIncludeImportMeshName(child.name, 'fragmentF1') || 
+          hasIncludeImportMeshName(child.name, 'innerWallF1') || 
+          hasIncludeImportMeshName(child.name, 'smogResponseF1') || 
+          hasIncludeImportMeshName(child.name, 'windowF1') || 
+          // ---
+          (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
+          (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
+        ) {
+          child.layers.set(cameraLayers[cameraType.GROUND_FLOOR])
+        }
+
+        if (hasIncludeImportMeshName(child.name, 'fragmentF1')) {
+          controlsTarget = child.position.clone()
+        }
+      }
+    })
+
+    this.camera.setActiveCamera(cameraType.GROUND_FLOOR,controlsTarget)
+    // this.camera.setActiveControlTarget(controlsTarget)
   }
 
   bindEvent() {}

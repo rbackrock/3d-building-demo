@@ -13,8 +13,15 @@ export const cameraType = {
 // 各个场景中相机 layer 值
 export const cameraLayers = {
   [cameraType.STANDARD]: 0,
-  [cameraType.GROUND_FLOOR]: 2,
-  [cameraType.DISASSEMBLE]: 1,
+  [cameraType.GROUND_FLOOR]: 1,
+  [cameraType.DISASSEMBLE]: 2,
+}
+
+// 设置物体 layer
+export function setLayerByMesh(meshList, layerId) {
+  for (const mesh of meshList) {
+    mesh.layers.set(layerId)
+  }
 }
 
 // 各个相机默认下的相机位置
@@ -58,6 +65,7 @@ export default class Camera {
     // 当前活动摄像机
     this.addDefaultCamera()
     this.addDisassembleCamera()
+    this.addGroundFloor()
     this.setActiveCamera(cameraType.STANDARD)
   }
 
@@ -78,6 +86,28 @@ export default class Camera {
 
     this.cameraList[cameraType.STANDARD] = {
       camera: defaultCamera,
+      controls
+    }
+  }
+
+  // 一层楼相机
+  addGroundFloor() {
+    const camera = new THREE.PerspectiveCamera(
+      35,
+      this.sizes.width / this.sizes.height,
+      0.001,
+      10000
+    )
+    camera.position.set(viewPostion[cameraType.GROUND_FLOOR].x, viewPostion[cameraType.GROUND_FLOOR].y, viewPostion[cameraType.GROUND_FLOOR].z)
+    camera.name = cameraType.GROUND_FLOOR
+    this.scene.add(camera)
+
+    // 默认相机拥有的控制器
+    const controls = new OrbitControls(camera, this.canvas)
+    controls.maxPolarAngle = Math.PI / 180 * 90
+
+    this.cameraList[cameraType.GROUND_FLOOR] = {
+      camera,
       controls
     }
   }
@@ -104,7 +134,7 @@ export default class Camera {
     }
   }
 
-  setLayerByMesh(meshList, layerId) {
+  setLayerBatchByMesh(meshList, layerId) {
     for (const mesh of meshList) {
       mesh.layers.set(layerId)
     }
@@ -114,16 +144,23 @@ export default class Camera {
    * 设置活动摄像机
    * @param {String} cameraName 摄像机名称
    */
-  setActiveCamera(type) {
+  setActiveCamera(type, controlTarget = new THREE.Vector3()) {
     const currentActiveCamera = this.cameraList[type].camera
     currentActiveCamera.layers.set(cameraLayers[type])
     currentActiveCamera.position.set(viewPostion[type].x, viewPostion[type].y, viewPostion[type].z)
     currentActiveCamera.updateProjectionMatrix()
 
     this.activeCamera = this.cameraList[type].camera
+
     this.activeControls = this.cameraList[type].controls
+    this.activeControls.target = controlTarget
     this.activeControls.update()
   }
+
+  // setActiveControlTarget(target) {
+  //   this.activeControls.target = target
+  //   this.activeControls.update()
+  // }
 
   /**
    * 添加额外摄像机，额外指比如 Blender 添加的摄像机
@@ -181,6 +218,11 @@ export default class Camera {
 
   update() {
     // console.log(this.activeCamera.position)
+    // console.log(this.activeControls)
+
+    if (this.activeControls) {
+      this.activeControls.update()
+    }
   }
 
   destroy() {

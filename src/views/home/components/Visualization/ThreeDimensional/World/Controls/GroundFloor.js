@@ -1,5 +1,6 @@
 import {
   setLayerByMesh,
+  cameraType,
   cameraLayers
 } from '../../Camera'
 
@@ -7,9 +8,9 @@ export default class GroundFloor {
   constructor(meshList) {
 
     // 设置 layer
-    setLayerByMesh(meshList, cameraLayers.DISASSEMBLE)
-    for (let i = 0; i < this.meshList.length; i++) {
-      this.meshList[i]
-    }
+    setLayerByMesh(meshList, cameraLayers[cameraType.GROUND_FLOOR])
+    // for (let i = 0; i < meshList.length; i++) {
+    //   console.log(meshList[i])
+    // }
   }
 }
