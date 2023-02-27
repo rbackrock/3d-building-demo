@@ -190,15 +190,19 @@ export default class Camera {
       y: this.activeCamera.position.y,
       z: this.activeCamera.position.z,
     }
-    let end = {}
-
-    if (type === cameraType.STANDARD) {
-      end = {
-        x: viewPostion[type].x,
-        y: viewPostion[type].y,
-        z: viewPostion[type].z,
-      }
+    let end = {
+      x: viewPostion[type].x,
+      y: viewPostion[type].y,
+      z: viewPostion[type].z,
     }
+
+    // if (type === cameraType.STANDARD) {
+    //   end = {
+    //     x: viewPostion[type].x,
+    //     y: viewPostion[type].y,
+    //     z: viewPostion[type].z,
+    //   }
+    // }
     
     let animation = gsap.to(start, {
       ...end,
