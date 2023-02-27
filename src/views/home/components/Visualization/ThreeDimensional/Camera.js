@@ -3,24 +3,33 @@ import ThreeDimensional from '.'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import gsap from 'gsap'
 
+// 相机类型
 export const cameraType = {
   STANDARD: 'standard_camera',
-  DISASSEMBLE: 'disassemble_camera'
+  GROUND_FLOOR: 'ground_floor_camera',
+  DISASSEMBLE: 'disassemble_camera',
 }
 
+// 各个场景中相机 layer 值
 export const cameraLayers = {
-  STANDARD: 0,
-  DISASSEMBLE: 1,
-  GROUND_FLOOR: 2
+  [cameraType.STANDARD]: 0,
+  [cameraType.GROUND_FLOOR]: 2,
+  [cameraType.DISASSEMBLE]: 1,
 }
 
+// 各个相机默认下的相机位置
 const viewPostion = {
-  STANDARD: {
+  [cameraType.STANDARD]: {
     x: -26.725648056562967,
     y: 12.403608633953866,
     z: 30.757085614756576
   },
-  DISASSEMBLE: {
+  [cameraType.GROUND_FLOOR]: {
+    x: -26.725648056562967,
+    y: 12.403608633953866,
+    z: 30.757085614756576
+  },
+  [cameraType.DISASSEMBLE]: {
     x: 0.233,
     y: 11.731,
     z: -18.266
@@ -59,7 +68,7 @@ export default class Camera {
       0.001,
       10000
     )
-    defaultCamera.position.set(viewPostion.STANDARD.x, viewPostion.STANDARD.y, viewPostion.STANDARD.z)
+    defaultCamera.position.set(viewPostion[cameraType.STANDARD].x, viewPostion[cameraType.STANDARD].y, viewPostion[cameraType.STANDARD].z)
     defaultCamera.name = cameraType.STANDARD
     this.scene.add(defaultCamera)
 
@@ -81,7 +90,7 @@ export default class Camera {
       0.1,
       10000
     )
-    camera.position.set(viewPostion.DISASSEMBLE.x, viewPostion.DISASSEMBLE.y, viewPostion.DISASSEMBLE.z)
+    camera.position.set(viewPostion[cameraType.DISASSEMBLE].x, viewPostion[cameraType.DISASSEMBLE].y, viewPostion[cameraType.DISASSEMBLE].z)
     camera.name = cameraType.DISASSEMBLE
     this.scene.add(camera)
 
@@ -106,15 +115,10 @@ export default class Camera {
    * @param {String} cameraName 摄像机名称
    */
   setActiveCamera(type) {
-    if (type === cameraType.STANDARD) {
-      this.cameraList[cameraType.STANDARD].camera.layers.set(cameraLayers.STANDARD)
-      this.cameraList[cameraType.STANDARD].camera.position.set(viewPostion.STANDARD.x, viewPostion.STANDARD.y, viewPostion.STANDARD.z)
-      this.cameraList[cameraType.STANDARD].camera.updateProjectionMatrix()
-    } else if (type === cameraType.DISASSEMBLE) {
-      this.cameraList[cameraType.DISASSEMBLE].camera.layers.set(cameraLayers.DISASSEMBLE)
-      this.cameraList[cameraType.DISASSEMBLE].camera.position.set(viewPostion.DISASSEMBLE.x, viewPostion.DISASSEMBLE.y, viewPostion.DISASSEMBLE.z)
-      this.cameraList[cameraType.DISASSEMBLE].camera.updateProjectionMatrix()
-    }
+    const currentActiveCamera = this.cameraList[type].camera
+    currentActiveCamera.layers.set(cameraLayers[type])
+    currentActiveCamera.position.set(viewPostion[type].x, viewPostion[type].y, viewPostion[type].z)
+    currentActiveCamera.updateProjectionMatrix()
 
     this.activeCamera = this.cameraList[type].camera
     this.activeControls = this.cameraList[type].controls

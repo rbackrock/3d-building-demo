@@ -11,6 +11,7 @@ import {
   sources
 } from '../resources/sources'
 import {
+  cameraType,
   cameraLayers
 } from '../Camera'
 
@@ -87,7 +88,7 @@ export default class World extends EventEmitter {
       }
     })
 
-    this.camera.setLayerByMesh(meshListForLayers, cameraLayers.DISASSEMBLE)
+    this.camera.setLayerByMesh(meshListForLayers, cameraLayers[cameraType.DISASSEMBLE])
     for (const mesh of meshListForScene) {
       this.scene.add(mesh)
     }

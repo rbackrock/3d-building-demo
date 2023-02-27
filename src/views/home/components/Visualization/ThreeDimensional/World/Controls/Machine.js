@@ -8,6 +8,7 @@ import {
   importMeshLastName
 } from '../../Utils'
 import {
+  cameraType,
   cameraLayers
 } from '../../Camera'
 
@@ -47,31 +48,22 @@ export default class Machine {
 
     // 是否已经展开
     this.isDisassemble = false
-
-    // tmp
-    // console.log(this.mesh)
-    // this.mesh.material.transparent = true
-    // this.mesh.material.opacity = 0.3
-
-    // this.mesh.onAfterRender = (renderer, scene, camera, geometry, material, group) => {
-    //   console.log(material)
-    // }
   }
 
   setLabel() {
     const coreLabelElement = document.querySelector('#machine-core-label-hook')
     const coreHtmlObject = new CSS2DObject(coreLabelElement)
-    coreHtmlObject.layers.set(cameraLayers.DISASSEMBLE)
+    coreHtmlObject.layers.set(cameraLayers[cameraType.DISASSEMBLE])
     this.machine.core.mesh.add(coreHtmlObject)
     
     const shellLabelElement = document.querySelector('#machine-shell-label-hook')
     const shellHtmlObject = new CSS2DObject(shellLabelElement)
-    shellHtmlObject.layers.set(cameraLayers.DISASSEMBLE)
+    shellHtmlObject.layers.set(cameraLayers[cameraType.DISASSEMBLE])
     this.machine.shell.mesh.add(shellHtmlObject)
 
     const baseLabelElement = document.querySelector('#machine-base-label-hook')
     const baseHtmlObject = new CSS2DObject(baseLabelElement)
-    baseHtmlObject.layers.set(cameraLayers.DISASSEMBLE)
+    baseHtmlObject.layers.set(cameraLayers[cameraType.DISASSEMBLE])
     this.machine.base.mesh.add(baseHtmlObject)
   }
 
