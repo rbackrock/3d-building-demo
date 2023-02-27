@@ -4,17 +4,22 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import gsap from 'gsap'
 
 // 相机类型
-export const cameraType = {
-  STANDARD: 'standard_camera',
-  GROUND_FLOOR: 'ground_floor_camera',
-  DISASSEMBLE: 'disassemble_camera',
+const cameraType = {
+  DEFAULT_CAMERA: 'default_camera'
+}
+
+// 视角类型
+export const angleViewType = {
+  STANDARD: 'standard_angle_view',
+  GROUND_FLOOR: 'ground_floor_angle_view',
+  DISASSEMBLE: 'disassemble_angle_view',
 }
 
 // 各个场景中相机 layer 值
-export const cameraLayers = {
-  [cameraType.STANDARD]: 0,
-  [cameraType.GROUND_FLOOR]: 1,
-  [cameraType.DISASSEMBLE]: 2,
+export const layers = {
+  STANDARD: 0,
+  GROUND_FLOOR: 1,
+  DISASSEMBLE: 2,
 }
 
 // 设置物体 layer
@@ -25,18 +30,18 @@ export function setMeshLayerBatch(meshList, layerId) {
 }
 
 // 各个相机默认下的相机位置
-const viewPostion = {
-  [cameraType.STANDARD]: {
+export const viewPostion = {
+  STANDARD: {
     x: -26.725648056562967,
     y: 12.403608633953866,
     z: 30.757085614756576
   },
-  [cameraType.GROUND_FLOOR]: {
+  GROUND_FLOOR: {
     x: -26.725648056562967,
     y: 12.403608633953866,
     z: 30.757085614756576
   },
-  [cameraType.DISASSEMBLE]: {
+  DISASSEMBLE: {
     x: 0.233,
     y: 11.731,
     z: -18.266
@@ -51,7 +56,6 @@ export default class Camera {
     this.canvas = this.threeDimensional.canvas
     // 当前活动摄像机
     this.activeCamera = null
-    this.activeCameraType = cameraType.STANDARD
     // 当前活动摄像机的控制器，如果有的话
     this.activeControls = null
     this.cameraList = {
@@ -64,73 +68,29 @@ export default class Camera {
 
     // 当前活动摄像机
     this.addDefaultCamera()
-    this.addDisassembleCamera()
+    // this.addDisassembleCamera()
     // this.addGroundFloor()
-    this.setActiveCamera(cameraType.STANDARD)
+    this.setActiveCamera(cameraType.DEFAULT_CAMERA)
 
     this.changeViewPosition = this.changeViewPosition.bind(this)
   }
 
   addDefaultCamera() {
-    const defaultCamera = new THREE.PerspectiveCamera(
+    const camera = new THREE.PerspectiveCamera(
       35,
       this.sizes.width / this.sizes.height,
       0.001,
       10000
     )
-    defaultCamera.position.set(viewPostion[cameraType.STANDARD].x, viewPostion[cameraType.STANDARD].y, viewPostion[cameraType.STANDARD].z)
-    defaultCamera.name = cameraType.STANDARD
-    this.scene.add(defaultCamera)
-
-    // 默认相机拥有的控制器
-    const controls = new OrbitControls(defaultCamera, this.canvas)
-    controls.maxPolarAngle = Math.PI / 180 * 90
-
-    this.cameraList[cameraType.STANDARD] = {
-      camera: defaultCamera,
-      controls
-    }
-  }
-
-  // 一层楼相机
-  // addGroundFloor() {
-  //   const camera = new THREE.PerspectiveCamera(
-  //     35,
-  //     this.sizes.width / this.sizes.height,
-  //     0.001,
-  //     10000
-  //   )
-  //   camera.position.set(viewPostion[cameraType.GROUND_FLOOR].x, viewPostion[cameraType.GROUND_FLOOR].y, viewPostion[cameraType.GROUND_FLOOR].z)
-  //   camera.name = cameraType.GROUND_FLOOR
-  //   this.scene.add(camera)
-
-  //   // 默认相机拥有的控制器
-  //   const controls = new OrbitControls(camera, this.canvas)
-  //   controls.maxPolarAngle = Math.PI / 180 * 90
-
-  //   this.cameraList[cameraType.GROUND_FLOOR] = {
-  //     camera,
-  //     controls
-  //   }
-  // }
-
-  // 拆解使用得相机
-  addDisassembleCamera() {
-    const camera = new THREE.PerspectiveCamera(
-      35,
-      this.sizes.width / this.sizes.height,
-      0.1,
-      10000
-    )
-    camera.position.set(viewPostion[cameraType.DISASSEMBLE].x, viewPostion[cameraType.DISASSEMBLE].y, viewPostion[cameraType.DISASSEMBLE].z)
-    camera.name = cameraType.DISASSEMBLE
+    camera.position.set(viewPostion.STANDARD.x, viewPostion.STANDARD.y, viewPostion.STANDARD.z)
+    camera.name = cameraType.DEFAULT_CAMERA
     this.scene.add(camera)
 
     // 默认相机拥有的控制器
     const controls = new OrbitControls(camera, this.canvas)
-    controls.enableDamping = true
+    controls.maxPolarAngle = Math.PI / 180 * 90
 
-    this.cameraList[cameraType.DISASSEMBLE] = {
+    this.cameraList[cameraType.DEFAULT_CAMERA] = {
       camera,
       controls
     }
@@ -146,27 +106,29 @@ export default class Camera {
    * 设置活动摄像机
    * @param {String} cameraName 摄像机名称
    */
-  setActiveCamera(type, controlTarget = new THREE.Vector3()) {
-    const currentActiveCamera = this.cameraList[type].camera
-    currentActiveCamera.layers.set(cameraLayers[type])
-    currentActiveCamera.position.set(viewPostion[type].x, viewPostion[type].y, viewPostion[type].z)
+  setActiveCamera(cameraTypeValue = cameraTypeValue.DEFAULT_CAMERA, layersValue = layers.STANDARD, viewPostionValue = viewPostion.STANDARD, controlTarget = new THREE.Vector3()) {
+    const currentCameraObject = this.cameraList[cameraTypeValue]
+    
+    const currentActiveCamera = currentCameraObject.camera
+    currentActiveCamera.layers.set(layersValue)
+    currentActiveCamera.position.set(viewPostionValue.x, viewPostionValue.y, viewPostionValue.z)
     currentActiveCamera.updateProjectionMatrix()
 
-    this.activeCamera = this.cameraList[type].camera
+    const currentActiveControls = currentCameraObject.controls
+    currentActiveControls.target = controlTarget
 
-    this.activeControls = this.cameraList[type].controls
-    this.activeControls.target = controlTarget
-    this.activeControls.update()
+    this.activeCamera = currentActiveCamera
+    this.activeControls = currentActiveControls
   }
 
-  setAngleView(type, controlTarget = new THREE.Vector3()) {
+  setAngleView(layersValue, viewPositionValue, controlTarget = new THREE.Vector3()) {
     const currentActiveCamera = this.activeCamera
     const currentActiveControl = this.activeControls
 
-    currentActiveCamera.layers.set(cameraLayers[type])
+    currentActiveCamera.layers.set(layersValue)
     currentActiveControl.target = controlTarget
 
-    this.changeViewPosition(type)
+    this.changeViewPosition(viewPositionValue)
   }
 
   /**
@@ -184,29 +146,21 @@ export default class Camera {
     }
   }
 
-  changeViewPosition(type) {
+  changeViewPosition(viewPositionValue) {
     const start = {
       x: this.activeCamera.position.x,
       y: this.activeCamera.position.y,
       z: this.activeCamera.position.z,
     }
     let end = {
-      x: viewPostion[type].x,
-      y: viewPostion[type].y,
-      z: viewPostion[type].z,
+      x: viewPositionValue.x,
+      y: viewPositionValue.y,
+      z: viewPositionValue.z,
     }
-
-    // if (type === cameraType.STANDARD) {
-    //   end = {
-    //     x: viewPostion[type].x,
-    //     y: viewPostion[type].y,
-    //     z: viewPostion[type].z,
-    //   }
-    // }
     
     let animation = gsap.to(start, {
       ...end,
-      duration: 0.9,
+      duration: 0.6,
       ease: 'none',
       // repeat: 1,
       onUpdate: () => {
@@ -228,9 +182,6 @@ export default class Camera {
   }
 
   update() {
-    // console.log(this.activeCamera.position)
-    // console.log(this.activeControls)
-
     if (this.activeControls) {
       this.activeControls.update()
     }

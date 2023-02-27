@@ -19,7 +19,6 @@ import ScienceBuilding from './components3d/ScienceBuilding/index.vue'
 
 import load from './ThreeDimensional/resources/index'
 import ThreeDimensional from './ThreeDimensional'
-import { cameraType } from './ThreeDimensional/Camera'
 
 let threeDimensional = null
 let world = null
@@ -45,10 +44,8 @@ function handlerChangeView(type) {
     store.setCurrentViewType(type)
 
     if (type === viewType.disassembleView) {
-      // world.camera.setActiveCamera(cameraType.DISASSEMBLE)
       world.setActiveMachineView()
     } else if (type === viewType.defaultView) {
-      // world.camera.setActiveCamera(cameraType.STANDARD)
       world.setActiveDefaultView()
     } else if (type === viewType.groundFloorView) {
       world.setActiveGroundFloor()

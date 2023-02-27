@@ -11,8 +11,8 @@ import {
   sources
 } from '../resources/sources'
 import {
-  cameraType,
-  cameraLayers,
+  layers,
+  viewPostion,
   setMeshLayerBatch
 } from '../Camera'
 
@@ -110,13 +110,14 @@ export default class World extends EventEmitter {
 
     // set controls
     this.controls.machine = new Machine(machineMainMesh)
-    setMeshLayerBatch(machineMeshForLayer, cameraLayers[cameraType.DISASSEMBLE])
+    setMeshLayerBatch(machineMeshForLayer, layers.DISASSEMBLE)
 
     this.scene.add(machineMainMesh)
   }
 
   setActiveMachineView() {
-    this.camera.setActiveCamera(cameraType.DISASSEMBLE)
+    // this.camera.setActiveCamera(cameraType.DISASSEMBLE)
+    this.camera.setAngleView(layers.DISASSEMBLE, viewPostion.DISASSEMBLE)
   }
 
   setActiveDefaultView() {
@@ -125,12 +126,12 @@ export default class World extends EventEmitter {
         hasIncludeImportMeshName(child.name, 'machine-main') === false &&
         hasIncludeImportMeshName(child.name, 'machine-part') === false
       ) {
-        child.layers.set(cameraLayers[cameraType.STANDARD])
+        child.layers.set(layers.STANDARD)
       }
     })
 
     // this.camera.setActiveCamera(cameraType.STANDARD)
-    this.camera.setAngleView(cameraType.STANDARD)
+    this.camera.setAngleView(layers.STANDARD, viewPostion.STANDARD)
   }
 
   setActiveGroundFloor() {
@@ -154,7 +155,7 @@ export default class World extends EventEmitter {
           (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
           (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
         ) {
-          child.layers.set(cameraLayers[cameraType.GROUND_FLOOR])
+          child.layers.set(layers.GROUND_FLOOR)
         }
 
         if (hasIncludeImportMeshName(child.name, 'fragmentF1')) {
@@ -165,7 +166,7 @@ export default class World extends EventEmitter {
 
     // this.camera.setActiveCamera(cameraType.GROUND_FLOOR,controlsTarget)
     // this.camera.setActiveControlTarget(controlsTarget)
-    this.camera.setAngleView(cameraType.GROUND_FLOOR, controlsTarget)
+    this.camera.setAngleView(layers.GROUND_FLOOR, viewPostion.GROUND_FLOOR, controlsTarget)
   }
 
   bindEvent() {}

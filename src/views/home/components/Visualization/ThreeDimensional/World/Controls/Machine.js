@@ -8,8 +8,7 @@ import {
   importMeshLastName
 } from '../../Utils'
 import {
-  cameraType,
-  cameraLayers
+  layers
 } from '../../Camera'
 
 export default class Machine {
@@ -53,17 +52,17 @@ export default class Machine {
   setLabel() {
     const coreLabelElement = document.querySelector('#machine-core-label-hook')
     const coreHtmlObject = new CSS2DObject(coreLabelElement)
-    coreHtmlObject.layers.set(cameraLayers[cameraType.DISASSEMBLE])
+    coreHtmlObject.layers.set(layers.DISASSEMBLE)
     this.machine.core.mesh.add(coreHtmlObject)
     
     const shellLabelElement = document.querySelector('#machine-shell-label-hook')
     const shellHtmlObject = new CSS2DObject(shellLabelElement)
-    shellHtmlObject.layers.set(cameraLayers[cameraType.DISASSEMBLE])
+    shellHtmlObject.layers.set(layers.DISASSEMBLE)
     this.machine.shell.mesh.add(shellHtmlObject)
 
     const baseLabelElement = document.querySelector('#machine-base-label-hook')
     const baseHtmlObject = new CSS2DObject(baseLabelElement)
-    baseHtmlObject.layers.set(cameraLayers[cameraType.DISASSEMBLE])
+    baseHtmlObject.layers.set(layers.DISASSEMBLE)
     this.machine.base.mesh.add(baseHtmlObject)
   }
 
