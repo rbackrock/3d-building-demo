@@ -18,7 +18,7 @@ export const cameraLayers = {
 }
 
 // 设置物体 layer
-export function setLayerByMesh(meshList, layerId) {
+export function setMeshLayerBatch(meshList, layerId) {
   for (const mesh of meshList) {
     mesh.layers.set(layerId)
   }
@@ -65,8 +65,10 @@ export default class Camera {
     // 当前活动摄像机
     this.addDefaultCamera()
     this.addDisassembleCamera()
-    this.addGroundFloor()
+    // this.addGroundFloor()
     this.setActiveCamera(cameraType.STANDARD)
+
+    this.changeViewPosition = this.changeViewPosition.bind(this)
   }
 
   addDefaultCamera() {
@@ -91,26 +93,26 @@ export default class Camera {
   }
 
   // 一层楼相机
-  addGroundFloor() {
-    const camera = new THREE.PerspectiveCamera(
-      35,
-      this.sizes.width / this.sizes.height,
-      0.001,
-      10000
-    )
-    camera.position.set(viewPostion[cameraType.GROUND_FLOOR].x, viewPostion[cameraType.GROUND_FLOOR].y, viewPostion[cameraType.GROUND_FLOOR].z)
-    camera.name = cameraType.GROUND_FLOOR
-    this.scene.add(camera)
+  // addGroundFloor() {
+  //   const camera = new THREE.PerspectiveCamera(
+  //     35,
+  //     this.sizes.width / this.sizes.height,
+  //     0.001,
+  //     10000
+  //   )
+  //   camera.position.set(viewPostion[cameraType.GROUND_FLOOR].x, viewPostion[cameraType.GROUND_FLOOR].y, viewPostion[cameraType.GROUND_FLOOR].z)
+  //   camera.name = cameraType.GROUND_FLOOR
+  //   this.scene.add(camera)
 
-    // 默认相机拥有的控制器
-    const controls = new OrbitControls(camera, this.canvas)
-    controls.maxPolarAngle = Math.PI / 180 * 90
+  //   // 默认相机拥有的控制器
+  //   const controls = new OrbitControls(camera, this.canvas)
+  //   controls.maxPolarAngle = Math.PI / 180 * 90
 
-    this.cameraList[cameraType.GROUND_FLOOR] = {
-      camera,
-      controls
-    }
-  }
+  //   this.cameraList[cameraType.GROUND_FLOOR] = {
+  //     camera,
+  //     controls
+  //   }
+  // }
 
   // 拆解使用得相机
   addDisassembleCamera() {
@@ -157,10 +159,15 @@ export default class Camera {
     this.activeControls.update()
   }
 
-  // setActiveControlTarget(target) {
-  //   this.activeControls.target = target
-  //   this.activeControls.update()
-  // }
+  setAngleView(type, controlTarget = new THREE.Vector3()) {
+    const currentActiveCamera = this.activeCamera
+    const currentActiveControl = this.activeControls
+
+    currentActiveCamera.layers.set(cameraLayers[type])
+    currentActiveControl.target = controlTarget
+
+    this.changeViewPosition(type)
+  }
 
   /**
    * 添加额外摄像机，额外指比如 Blender 添加的摄像机
@@ -187,9 +194,9 @@ export default class Camera {
 
     if (type === cameraType.STANDARD) {
       end = {
-        x: viewPostion.STANDARD.x,
-        y: viewPostion.STANDARD.y,
-        z: viewPostion.STANDARD.z,
+        x: viewPostion[type].x,
+        y: viewPostion[type].y,
+        z: viewPostion[type].z,
       }
     }
     

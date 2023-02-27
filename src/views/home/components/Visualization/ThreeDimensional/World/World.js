@@ -13,7 +13,7 @@ import {
 import {
   cameraType,
   cameraLayers,
-  setLayerByMesh
+  setMeshLayerBatch
 } from '../Camera'
 
 // controls
@@ -110,7 +110,7 @@ export default class World extends EventEmitter {
 
     // set controls
     this.controls.machine = new Machine(machineMainMesh)
-    setLayerByMesh(machineMeshForLayer, cameraLayers[cameraType.DISASSEMBLE])
+    setMeshLayerBatch(machineMeshForLayer, cameraLayers[cameraType.DISASSEMBLE])
 
     this.scene.add(machineMainMesh)
   }
@@ -129,7 +129,8 @@ export default class World extends EventEmitter {
       }
     })
 
-    this.camera.setActiveCamera(cameraType.STANDARD)
+    // this.camera.setActiveCamera(cameraType.STANDARD)
+    this.camera.setAngleView(cameraType.STANDARD)
   }
 
   setActiveGroundFloor() {
@@ -162,8 +163,9 @@ export default class World extends EventEmitter {
       }
     })
 
-    this.camera.setActiveCamera(cameraType.GROUND_FLOOR,controlsTarget)
+    // this.camera.setActiveCamera(cameraType.GROUND_FLOOR,controlsTarget)
     // this.camera.setActiveControlTarget(controlsTarget)
+    this.camera.setAngleView(cameraType.GROUND_FLOOR, controlsTarget)
   }
 
   bindEvent() {}
