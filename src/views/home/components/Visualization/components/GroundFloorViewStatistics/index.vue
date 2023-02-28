@@ -60,7 +60,6 @@
       padding: 5px;
       width: 100%;
       height: 100%;
-      // transform: translate(-50%, -50%) matrix3d(0.0159352, 0, -0.00143806, 0, 0, -0.016, 0, 0, 0.00143806, 0, 0.0159352, 0, -15, 5, 10, 1);
 
       .list-container {
         width: 100%;

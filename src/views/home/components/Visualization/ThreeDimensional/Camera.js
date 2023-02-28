@@ -37,9 +37,17 @@ export const viewPostion = {
     z: 30.757085614756576
   },
   GROUND_FLOOR: {
-    x: -12.94722127215085,
-    y: 15.13070191561742,
-    z: 23.398423346195166
+    // x: -12.047786712646484,
+    // y: 20.52861785888672,
+    // z: 24.73171615600586
+
+    // x: -11.213001251220703,
+    // y: 25.330535888671875,
+    // z: 27.778125762939453,
+
+    x: -13.109412693586608,
+    y: 13.309327382973173,
+    z: 23.29790303618073,
   },
   DISASSEMBLE: {
     x: 0.233,
@@ -106,7 +114,7 @@ export default class Camera {
    * 设置活动摄像机
    * @param {String} cameraName 摄像机名称
    */
-  setActiveCamera(cameraTypeValue = cameraTypeValue.DEFAULT_CAMERA, layersValue = layers.STANDARD, viewPostionValue = viewPostion.STANDARD, controlTarget = new THREE.Vector3()) {
+  setActiveCamera(cameraTypeValue = cameraTypeValue.DEFAULT_CAMERA, layersValue = layers.STANDARD, viewPostionValue = viewPostion.STANDARD, controlTarget) {
     const currentCameraObject = this.cameraList[cameraTypeValue]
     
     const currentActiveCamera = currentCameraObject.camera
@@ -115,18 +123,23 @@ export default class Camera {
     currentActiveCamera.updateProjectionMatrix()
 
     const currentActiveControls = currentCameraObject.controls
-    currentActiveControls.target = controlTarget
+    if (controlTarget) {
+      currentActiveControls.target = controlTarget
+    }
 
     this.activeCamera = currentActiveCamera
     this.activeControls = currentActiveControls
   }
 
-  setAngleView(layersValue, viewPositionValue, controlTarget = new THREE.Vector3()) {
+  setAngleView(layersValue, viewPositionValue, controlTarget) {
     const currentActiveCamera = this.activeCamera
     const currentActiveControl = this.activeControls
 
     currentActiveCamera.layers.set(layersValue)
-    currentActiveControl.target = controlTarget
+
+    if (controlTarget) {
+      currentActiveControl.target = controlTarget
+    }
 
     this.changeViewPosition(viewPositionValue)
   }
@@ -182,7 +195,6 @@ export default class Camera {
   }
 
   update() {
-    // console.log(this.activeCamera.position)
     if (this.activeControls) {
       this.activeControls.update()
     }
