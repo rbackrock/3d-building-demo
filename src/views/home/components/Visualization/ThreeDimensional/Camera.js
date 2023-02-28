@@ -37,9 +37,9 @@ export const viewPostion = {
     z: 30.757085614756576
   },
   GROUND_FLOOR: {
-    x: -26.725648056562967,
-    y: 12.403608633953866,
-    z: 30.757085614756576
+    x: -12.94722127215085,
+    y: 15.13070191561742,
+    z: 23.398423346195166
   },
   DISASSEMBLE: {
     x: 0.233,
@@ -182,6 +182,7 @@ export default class Camera {
   }
 
   update() {
+    // console.log(this.activeCamera.position)
     if (this.activeControls) {
       this.activeControls.update()
     }

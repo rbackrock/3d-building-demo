@@ -10,86 +10,99 @@
       default: true
     }
   })
+
 </script>
 
 <template>
-  <div>
-    <div
-      class="left-container"
-      :class="{ show: props.isView === true, hide: props.isView !== true }"
-    >
-      <div class="content">一层楼-假装有数据</div>
-    </div>
-    <div
-      class="right-container"
-      :class="{ show: props.isView === true, hide: props.isView !== true }"
-    >
-      <div class="content">一层楼-假装有数据</div>
+  <div v-show="props.isView" id="ground-floor-info-list-hook" class="view-container">
+    <div class="view-container-wrapper">
+      <table class="list-container">
+        <thead>
+          <tr>
+            <th class="w-50">编号</th>
+            <th class="w-50">类型</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="w-50">S001</td>
+            <td class="w-50">烟感器</td>
+          </tr>
+          <tr>
+            <td class="w-50">FB001</td>
+            <td class="w-50">消防箱</td>
+          </tr>
+          <tr class="active">
+            <td class="w-50">FC001</td>
+            <td class="w-50">消防柜</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
 <style lang="less" scoped>
-  @container-width: 18%;
-
-  .left-container {
+  .view-container {
     position: fixed;
-    bottom: 0;
-    width: @container-width;
-    height: calc(94vh);
-    color: rgb(179, 203, 235);
+    left: 0;
+    top: 18%;
+    width: 500px;
+    height: 620px;
+    font-size: 12px;
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    transform: translateZ(0) matrix3d(0.754844, -0.19101, -0.627475, 0, 0, -0.956657, 0.291217, 0, 0.655904, 0.219823, -0.277873, 0, 0, 0, -42.5923, 1) translate(0, 0) rotateX(180deg);
+    font-size: 18px;
 
-    background-image: url(../../images/left.png);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 100% 100%;
+    .view-container-wrapper {
+      padding: 5px;
+      width: 100%;
+      height: 100%;
+      // transform: translate(-50%, -50%) matrix3d(0.0159352, 0, -0.00143806, 0, 0, -0.016, 0, 0, 0.00143806, 0, 0.0159352, 0, -15, 5, 10, 1);
 
-    transition: all 0.6s;
+      .list-container {
+        width: 100%;
 
-    &.show {
-      left: 0;
-      opacity: 1;
-    }
+        thead {
+          tr {
+            th {
+              padding: 2px 0;
+              text-shadow: -4px -4px 9px #fff;
+              text-align: center;
+            }
+          }
+        }
 
-    &.hide {
-      left: -@container-width;
-      opacity: 0;
-    }
+        tbody {
+          tr {
+            td {
+              padding: 2px 0;
+              text-shadow: -4px -4px 9px #fff;
+              text-align: center;
+            }
 
-    .content {
-      padding: 30px 0;
-      text-align: center;
+            &:hover {
+              color: #fff;
+              cursor: pointer;
+              background: #ff0000;
+              transform: scale(1.1);
+            }
+
+            &.active {
+              color: #fff;
+              cursor: pointer;
+              background: #ff0000;
+              transform: scale(1.1);
+            }
+          }
+        }
+      }
     }
   }
 
-  .right-container{
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    width: 18%;
-    height: calc(94vh);
-    color: rgb(179, 203, 235);
-
-    background-image: url(../../images/right.png);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: 100% 100%;
-
-    transition: all 0.6s;
-
-    &.show {
-      right: 0;
-      opacity: 1;
-    }
-
-    &.hide {
-      right: -@container-width;
-      opacity: 0;
-    }
-
-    .content {
-      padding: 30px 0;
-      text-align: center;
-    }
+  .w-50 {
+    width: 50%;
   }
 </style>

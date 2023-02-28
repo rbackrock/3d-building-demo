@@ -18,8 +18,8 @@ import {
 
 // mesh
 import {
-  createScienceBuildingInfoMesh
-} from './mesh/scienceBuildingInfoMesh'
+  createBuildingInfoMesh
+} from './mesh/scienceBuildingMesh'
 import {
   createMachineCoreInfoMesh,
   createMachineShellInfoMesh,
@@ -65,11 +65,12 @@ export default class World extends EventEmitter {
   createNormalScene() {
     const gltf = this.resources[sources.sceneGltf]
     let scienceBuildingInfoMesh = null
+    let groundFloorInfoMesh = null
 
     gltf.scene.traverse(child => {
       // 添加科技楼数据 mesh
       if (child.name === 'scienceBuildingMarker') {
-        scienceBuildingInfoMesh = createScienceBuildingInfoMesh(child)
+        scienceBuildingInfoMesh = createBuildingInfoMesh(child)
         this.scene.add(scienceBuildingInfoMesh)
       }
     })
@@ -139,7 +140,7 @@ export default class World extends EventEmitter {
           hasIncludeImportMeshName(child.name, 'fragmentF1') || 
           hasIncludeImportMeshName(child.name, 'innerWallF1') || 
           hasIncludeImportMeshName(child.name, 'smogResponseF1') || 
-          hasIncludeImportMeshName(child.name, 'windowF1') || 
+          hasIncludeImportMeshName(child.name, 'windowF1') ||
           // ---
           (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
           (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')

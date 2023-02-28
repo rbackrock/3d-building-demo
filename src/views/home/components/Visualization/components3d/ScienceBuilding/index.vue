@@ -1,8 +1,12 @@
 <script setup>
+import { storeToRefs } from 'pinia'
   import * as echarts from 'echarts'
-  import {
-    store
-  } from '../../sotre'
+  // import {
+  //   store
+  // } from '../../sotre'
+  import useVisualizationStore, {
+    viewType
+  } from '@/store/visualization'
   import {
     ref,
     watch,
@@ -11,10 +15,14 @@
     nextTick
   } from 'vue'
 
+  const store = useVisualizationStore()
+  const {
+    isLoading
+  } = storeToRefs(store)
   const scienceBuildingInfoCssRenderRef = ref(null)
   let chartInstance = null
 
-  watch(store.isLoading, async (newIsLoadingValue, oldIsLoadingValue) => {
+  watch(isLoading, async (newIsLoadingValue, oldIsLoadingValue) => {
     await nextTick()
     initChart()
   })
@@ -90,7 +98,7 @@
 </script>
 
 <template>
-  <div id="science-building-css-render-hook" class="view-container" :class="{ hide: store.isLoading.value === true }">
+  <div id="science-building-css-render-hook" class="view-container" :class="{ hide: store.isLoading === true }">
     <div ref="scienceBuildingInfoCssRenderRef" style="width: 100%; height: 100%;"></div>
   </div>
 </template>

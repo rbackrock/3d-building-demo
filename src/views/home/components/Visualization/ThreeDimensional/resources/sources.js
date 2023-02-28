@@ -40,7 +40,8 @@ export default [
     path: [
       // '/3d/models/building.glb'
       // '/3d/models/build0004-yasuo-quan.glb'
-      '/3d/models/building.glb'
+      'http://cdn.rback.fun/building-demo/building.glb'
+      // '/3d/models/building.glb'
     ]
   },
   // {
