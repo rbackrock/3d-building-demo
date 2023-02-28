@@ -48,7 +48,7 @@ function handlerChangeView(type) {
     } else if (type === viewType.defaultView) {
       world.setActiveDefaultView()
     } else if (type === viewType.groundFloorView) {
-      world.setActiveGroundFloor()
+      world.setActiveGroundFloorView()
     }
   }
 }

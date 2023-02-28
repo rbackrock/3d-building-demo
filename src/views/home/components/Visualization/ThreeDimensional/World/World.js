@@ -134,7 +134,7 @@ export default class World extends EventEmitter {
     this.camera.setAngleView(layers.STANDARD, viewPostion.STANDARD)
   }
 
-  setActiveGroundFloor() {
+  setActiveGroundFloorView() {
     let controlsTarget = new THREE.Vector3()
     this.scene.traverse(child => {
       if (
