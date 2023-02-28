@@ -16,6 +16,16 @@ import {
   setMeshLayerBatch
 } from '../Camera'
 
+// mesh
+import {
+  createScienceBuildingInfoMesh
+} from './mesh/scienceBuildingInfoMesh'
+import {
+  createMachineCoreInfoMesh,
+  createMachineShellInfoMesh,
+  createMachineBaseInfoMesh
+} from './mesh/machineInfoMesh'
+
 // controls
 import Machine from './Controls/Machine'
 import ScienceBuildingInfo from './Controls/ScienceBuildingInfo'
@@ -54,40 +64,19 @@ export default class World extends EventEmitter {
 
   createNormalScene() {
     const gltf = this.resources[sources.sceneGltf]
-    // pick up
-    let scienceBuildingMarkerMesh = null
-    const groundFloorMeshList  = []
+    let scienceBuildingInfoMesh = null
 
     gltf.scene.traverse(child => {
+      // 添加科技楼数据 mesh
       if (child.name === 'scienceBuildingMarker') {
-        scienceBuildingMarkerMesh = child
-      }
-
-      if (
-        hasIncludeImportMeshName(child.name, 'chairF1') || 
-        hasIncludeImportMeshName(child.name, 'desktopF1') || 
-        hasIncludeImportMeshName(child.name, 'fireFightingBoxF1') || 
-        hasIncludeImportMeshName(child.name, 'fireFightingCupboardF1') || 
-        hasIncludeImportMeshName(child.name, 'fragmentF1') || 
-        hasIncludeImportMeshName(child.name, 'innerWallF1') || 
-        hasIncludeImportMeshName(child.name, 'smogResponseF1') || 
-        hasIncludeImportMeshName(child.name, 'windowF1') || 
-        // ---
-        (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
-        (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
-      ) {
-        groundFloorMeshList.push(child)
+        scienceBuildingInfoMesh = createScienceBuildingInfoMesh(child)
+        this.scene.add(scienceBuildingInfoMesh)
       }
     })
     this.scene.add(gltf.scene)
 
-    // 控制科技楼外部信息图表
-    const scienceBuildingInfoMesh = new ScienceBuildingInfo(scienceBuildingMarkerMesh)
-    this.controls.scienceBuildingInfo = scienceBuildingInfoMesh
-    this.scene.add(scienceBuildingInfoMesh.getScienceBuildingMesh())
-
-    // 一层楼
-    this.controls.groundFloor = new GroundFloor(groundFloorMeshList)
+    // 添加 controls
+    this.controls.scienceBuildingInfo = new ScienceBuildingInfo(scienceBuildingInfoMesh)
   }
 
   createMachineScene() {
@@ -98,50 +87,50 @@ export default class World extends EventEmitter {
     gltf.scene.traverse(child => {
       if (hasIncludeImportMeshName(child.name, 'machine-main')) {
         machineMainMesh = child
+        machineMeshForLayer.push(child)
       }
 
-      if (
-        hasIncludeImportMeshName(child.name, 'machine-main') ||
-        hasIncludeImportMeshName(child.name, 'machine-part')
-      ) {
+      if (importMeshLastName(child.name) === 'core') {
+        child.add(createMachineCoreInfoMesh())
+        machineMeshForLayer.push(child)
+      }
+
+      if (importMeshLastName(child.name) === 'shell') {
+        child.add(createMachineShellInfoMesh())
+        machineMeshForLayer.push(child)
+      }
+
+      if (importMeshLastName(child.name) === 'base') {
+        child.add(createMachineBaseInfoMesh())
         machineMeshForLayer.push(child)
       }
     })
 
+    setMeshLayerBatch(machineMeshForLayer, layers.DISASSEMBLE)
+    this.scene.add(machineMainMesh)
+
     // set controls
     this.controls.machine = new Machine(machineMainMesh)
-    setMeshLayerBatch(machineMeshForLayer, layers.DISASSEMBLE)
-
-    this.scene.add(machineMainMesh)
   }
 
   setActiveMachineView() {
-    // this.camera.setActiveCamera(cameraType.DISASSEMBLE)
     this.camera.setAngleView(layers.DISASSEMBLE, viewPostion.DISASSEMBLE)
   }
 
   setActiveDefaultView() {
     this.scene.traverse(child => {
-      if (
-        hasIncludeImportMeshName(child.name, 'machine-main') === false &&
-        hasIncludeImportMeshName(child.name, 'machine-part') === false
-      ) {
+      if (!this.hasMachineMesh(child)) {
         child.layers.set(layers.STANDARD)
       }
     })
 
-    // this.camera.setActiveCamera(cameraType.STANDARD)
     this.camera.setAngleView(layers.STANDARD, viewPostion.STANDARD)
   }
 
   setActiveGroundFloorView() {
     let controlsTarget = new THREE.Vector3()
     this.scene.traverse(child => {
-      if (
-        hasIncludeImportMeshName(child.name, 'machine-main') === false &&
-        hasIncludeImportMeshName(child.name, 'machine-part') === false
-      ) {
-
+      if (!this.hasMachineMesh(child)) {
         if (
           hasIncludeImportMeshName(child.name, 'chairF1') || 
           hasIncludeImportMeshName(child.name, 'desktopF1') || 
@@ -164,9 +153,22 @@ export default class World extends EventEmitter {
       }
     })
 
-    // this.camera.setActiveCamera(cameraType.GROUND_FLOOR,controlsTarget)
-    // this.camera.setActiveControlTarget(controlsTarget)
     this.camera.setAngleView(layers.GROUND_FLOOR, viewPostion.GROUND_FLOOR, controlsTarget)
+  }
+
+  // 排除机器场景
+  hasMachineMesh(mesh) {
+    if (
+      hasIncludeImportMeshName(mesh.name, 'machine-main') ||
+      hasIncludeImportMeshName(mesh.name, 'machine-part') ||
+      mesh.name === 'machineCoreInfo' ||
+      mesh.name === 'machineShellInfo' ||
+      mesh.name === 'machineBaseInfo'
+    ) {
+      return true
+    }
+
+    return false
   }
 
   bindEvent() {}

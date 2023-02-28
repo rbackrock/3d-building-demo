@@ -7,17 +7,12 @@ import {
 } from '../../Camera'
 
 export default class ScienceBuildingInfo {
-  constructor(chartMarkerMesh) {
-    this.chartMarkerMesh = chartMarkerMesh
+  constructor(infoMesh) {
+    this.infoMesh = infoMesh
 
     const animation = {
       value: -0.09
     }
-
-    // 设置位置
-    const scienceBuildingMarkerPosition = new THREE.Vector3()
-    scienceBuildingMarkerPosition.copy(this.chartMarkerMesh.position)
-    this.mesh = this.createScienceBuildingMesh(scienceBuildingMarkerPosition)
 
     this.rotateAnimation = gsap.to(animation, {
       value: 0.09,
@@ -25,24 +20,9 @@ export default class ScienceBuildingInfo {
       yoyo: true,
       repeat: -1,
       onUpdate: () => {
-        this.mesh.rotation.set(0, animation.value, 0)
+        this.infoMesh.rotation.set(0, animation.value, 0)
       }
     })
-  }
-
-  createScienceBuildingMesh(position) {
-    const size = 0.016
-    const css3Object = new CSS3DObject(document.querySelector('#science-building-css-render-hook'))
-    css3Object.layers.set(layers.DISASSEMBLE)
-    css3Object.scale.set(size, size, size)
-    css3Object.position.copy(position)
-    css3Object.rotateY(0.1)
-
-    return css3Object
-  }
-
-  getScienceBuildingMesh() {
-    return this.mesh
   }
 
   destroy() {

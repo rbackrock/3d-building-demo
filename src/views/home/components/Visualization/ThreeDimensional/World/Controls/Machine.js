@@ -43,28 +43,28 @@ export default class Machine {
     this.baseMeshCombineAnimation = null
 
     // 设置标签
-    this.setLabel()
+    // this.setLabel()
 
     // 是否已经展开
     this.isDisassemble = false
   }
 
-  setLabel() {
-    const coreLabelElement = document.querySelector('#machine-core-label-hook')
-    const coreHtmlObject = new CSS2DObject(coreLabelElement)
-    coreHtmlObject.layers.set(layers.DISASSEMBLE)
-    this.machine.core.mesh.add(coreHtmlObject)
+  // setLabel() {
+  //   const coreLabelElement = document.querySelector('#machine-core-label-hook')
+  //   const coreHtmlObject = new CSS2DObject(coreLabelElement)
+  //   coreHtmlObject.layers.set(layers.DISASSEMBLE)
+  //   this.machine.core.mesh.add(coreHtmlObject)
     
-    const shellLabelElement = document.querySelector('#machine-shell-label-hook')
-    const shellHtmlObject = new CSS2DObject(shellLabelElement)
-    shellHtmlObject.layers.set(layers.DISASSEMBLE)
-    this.machine.shell.mesh.add(shellHtmlObject)
+  //   const shellLabelElement = document.querySelector('#machine-shell-label-hook')
+  //   const shellHtmlObject = new CSS2DObject(shellLabelElement)
+  //   shellHtmlObject.layers.set(layers.DISASSEMBLE)
+  //   this.machine.shell.mesh.add(shellHtmlObject)
 
-    const baseLabelElement = document.querySelector('#machine-base-label-hook')
-    const baseHtmlObject = new CSS2DObject(baseLabelElement)
-    baseHtmlObject.layers.set(layers.DISASSEMBLE)
-    this.machine.base.mesh.add(baseHtmlObject)
-  }
+  //   const baseLabelElement = document.querySelector('#machine-base-label-hook')
+  //   const baseHtmlObject = new CSS2DObject(baseLabelElement)
+  //   baseHtmlObject.layers.set(layers.DISASSEMBLE)
+  //   this.machine.base.mesh.add(baseHtmlObject)
+  // }
 
   // 拆解
   disassemble() {
