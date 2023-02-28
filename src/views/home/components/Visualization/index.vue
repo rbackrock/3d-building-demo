@@ -39,7 +39,6 @@ onBeforeUnmount(() => {
 })
 
 function handlerChangeView(type) {
-  console.log(type)
   if (world) {
     store.setCurrentViewType(type)
 
