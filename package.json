@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@better-scroll/core": "^2.5.0",
+    "@better-scroll/mouse-wheel": "^2.5.0",
     "echarts": "^5.4.1",
     "gsap": "^3.11.4",
     "lil-gui": "^0.17.0",

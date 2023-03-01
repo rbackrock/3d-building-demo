@@ -4,10 +4,6 @@ import {
   onBeforeUnmount
 } from 'vue'
 
-// import {
-//   store,
-//   viewType
-// } from './sotre'
 import useVisualizationStore, {
   viewType
 } from '@/store/visualization'

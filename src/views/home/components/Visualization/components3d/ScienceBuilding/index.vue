@@ -1,9 +1,6 @@
 <script setup>
-import { storeToRefs } from 'pinia'
-  import * as echarts from 'echarts'
-  // import {
-  //   store
-  // } from '../../sotre'
+  import { storeToRefs } from 'pinia'
+  import * as echarts from 'echarts/core'
   import useVisualizationStore, {
     viewType
   } from '@/store/visualization'
@@ -14,6 +11,23 @@ import { storeToRefs } from 'pinia'
     onBeforeUnmount,
     nextTick
   } from 'vue'
+
+  import {
+    PieChart
+  } from 'echarts/charts'
+  import {
+    TitleComponent,
+    VisualMapComponent
+  } from 'echarts/components'
+  import {
+  } from 'echarts/features'
+  import { CanvasRenderer } from 'echarts/renderers'
+  echarts.use([
+    PieChart,
+    TitleComponent,
+    VisualMapComponent,
+    CanvasRenderer
+  ])
 
   const store = useVisualizationStore()
   const {
