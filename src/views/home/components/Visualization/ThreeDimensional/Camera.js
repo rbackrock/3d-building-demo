@@ -45,9 +45,9 @@ export const viewPostion = {
     // y: 25.330535888671875,
     // z: 27.778125762939453,
 
-    x: -13.109412693586608,
-    y: 13.309327382973173,
-    z: 23.29790303618073,
+    x: -8.034419059753418,
+    y: 23.485822677612305,
+    z: 21.631031036376953
   },
   DISASSEMBLE: {
     x: 0.233,
@@ -131,15 +131,13 @@ export default class Camera {
     this.activeControls = currentActiveControls
   }
 
-  setAngleView(layersValue, viewPositionValue, controlTarget) {
+  setAngleView(layersValue, viewPositionValue, controlTarget = new THREE.Vector3(0, 0, 0)) {
     const currentActiveCamera = this.activeCamera
     const currentActiveControl = this.activeControls
 
     currentActiveCamera.layers.set(layersValue)
 
-    if (controlTarget) {
-      currentActiveControl.target = controlTarget
-    }
+    currentActiveControl.target = controlTarget
 
     this.changeViewPosition(viewPositionValue)
   }
@@ -195,6 +193,7 @@ export default class Camera {
   }
 
   update() {
+    // console.log(this.activeCamera.position)
     if (this.activeControls) {
       this.activeControls.update()
     }

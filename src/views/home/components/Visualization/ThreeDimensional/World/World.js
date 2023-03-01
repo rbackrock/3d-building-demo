@@ -64,8 +64,16 @@ export default class World extends EventEmitter {
 
   createNormalScene() {
     const gltf = this.resources[sources.sceneGltf]
+    // 科技楼信息
     let scienceBuildingInfoMesh = null
-    let groundFloorInfoMesh = null
+    // 第一层楼主体网格
+    let groundFloorPrincipalMesh = []
+    // 楼层之间的平面
+    let firstFloorNum1 = null
+    let firstFloorNum2 = null
+    let firstFloorNum3 = null
+    let firstFloorNum4 = null
+    let firstFloorNum5 = null
 
     gltf.scene.traverse(child => {
       // 添加科技楼数据 mesh
@@ -73,11 +81,17 @@ export default class World extends EventEmitter {
         scienceBuildingInfoMesh = createBuildingInfoMesh(child)
         this.scene.add(scienceBuildingInfoMesh)
       }
+
+      if (child.name === 'fragmentF1#1') {
+        groundFloorPrincipalMesh = child
+      }
     })
     this.scene.add(gltf.scene)
 
-    // 添加 controls
+    // 科技楼信息 controls
     this.controls.scienceBuildingInfo = new ScienceBuildingInfo(scienceBuildingInfoMesh)
+    // 一层楼 controls
+    this.controls.groundFloor = new GroundFloor(groundFloorPrincipalMesh)
   }
 
   createMachineScene() {
@@ -140,10 +154,10 @@ export default class World extends EventEmitter {
           hasIncludeImportMeshName(child.name, 'fragmentF1') || 
           hasIncludeImportMeshName(child.name, 'innerWallF1') || 
           hasIncludeImportMeshName(child.name, 'smogResponseF1') || 
-          hasIncludeImportMeshName(child.name, 'windowF1') ||
+          hasIncludeImportMeshName(child.name, 'windowF1')
           // ---
-          (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
-          (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
+          // (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
+          // (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
         ) {
           child.layers.set(layers.GROUND_FLOOR)
         }
