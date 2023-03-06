@@ -48,6 +48,8 @@ onBeforeUnmount(() => {
 watch(selectedOutlinePassMeshId, newSelectedMeshId => {
   if (viewType.groundFloorView === currentViewType.value) {
     world.controls.groundFloor.addOutlinePass(newSelectedMeshId)
+  } else if (viewType.secondFloorView === currentViewType.value) {
+    world.controls.secondFloor.addOutlinePass(newSelectedMeshId)
   }
 })
 
@@ -63,6 +65,9 @@ function handlerChangeView(type) {
     } else if (type === viewType.groundFloorView) {
       world.setActiveGroundFloorView()
       world.controls.groundFloor.setEffect()
+    } else if (type === viewType.secondFloorView) {
+      world.setActiveSecondFloorView()
+      world.controls.secondFloor.setEffect()
     }
   }
 }

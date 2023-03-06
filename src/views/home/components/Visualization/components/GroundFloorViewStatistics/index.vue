@@ -1,7 +1,4 @@
 <script setup>
-  import {
-    reactive
-  } from 'vue'
   import FloorList from '@/components/FloorList.vue'
 
   const props = defineProps({

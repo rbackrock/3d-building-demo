@@ -12,14 +12,20 @@ const cameraType = {
 export const angleViewType = {
   STANDARD: 'standard_angle_view',
   GROUND_FLOOR: 'ground_floor_angle_view',
+  SECOND_FLOOR: 'second_floor_angle_view',
+  THIRD_FLOOR: 'third_floor_angle_view',
+  FOUR_FLOOR: 'four_floor_angle_view',
   DISASSEMBLE: 'disassemble_angle_view',
 }
 
 // 各个场景中相机 layer 值
 export const layers = {
   STANDARD: 0,
-  GROUND_FLOOR: 1,
-  DISASSEMBLE: 2,
+  DISASSEMBLE: 1,
+  GROUND_FLOOR: 2,
+  SECOND_FLOOR: 3,
+  THIRD_FLOOR: 4,
+  FOUR_FLOOR: 5
 }
 
 // 设置物体 layer
@@ -37,14 +43,14 @@ export const viewPostion = {
     z: 30.757085614756576
   },
   GROUND_FLOOR: {
-    // 默认
     x: -8.034419059753418,
     y: 23.485822677612305,
     z: 21.631031036376953
-
-    // x: -4.603981018066406,
-    // y: 22.198165893554688,
-    // z: 9.193706512451172
+  },
+  SECOND_FLOOR: {
+    x: -8.034419059753418,
+    y: 23.485822677612305,
+    z: 21.631031036376953
   },
   DISASSEMBLE: {
     x: 0.233,
