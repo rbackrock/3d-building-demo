@@ -28,7 +28,12 @@ export default class Postprocessing {
       this.camera.activeCamera
     )
     this.composer.addPass(this.outlinePass)
-
+    
+    // 线条效果
+    this.outlinePass.edgeStrength = 10
+    this.outlinePass.edgeGlow = 1
+    this.outlinePass.edgeThickness = 4
+    this.outlinePass.pulsePeriod = 5
     // 设置颜色
     this.outlinePass.visibleEdgeColor.set('#ff0000')
     this.outlinePass.hiddenEdgeColor.set('#ff0000')
