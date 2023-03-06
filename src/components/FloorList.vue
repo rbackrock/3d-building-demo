@@ -1,6 +1,7 @@
 <script setup>
   import {
     ref,
+    reactive,
     onMounted,
     onBeforeUnmount,
     watch,
@@ -8,11 +9,14 @@
   } from 'vue'
   import BScroll from '@better-scroll/core'
   import MouseWheel from '@better-scroll/mouse-wheel'
+  import useVisualizationStore from '@/store/visualization'
 
   BScroll.use(MouseWheel)
 
+  const store = useVisualizationStore()
   const showDetail = ref(false)
   const currentRecordNumber = ref('')
+  let currentDetail = reactive({})
   const scrollBodyRef = ref(null)
   const props = defineProps({
     isView: {
@@ -50,21 +54,30 @@
     if (bs && newProps.isView) {
       bs.refresh()
     }
+
+    if (newProps.isView === false) {
+      currentRecordNumber.value = ''
+      showDetail.value = false
+    }
   })
 
   function handleShowDetail(row) {
-    console.log(row)
+    currentDetail = row.detail
     currentRecordNumber.value = row.number
     showDetail.value = true
+
+    // 设置物体高亮
+    store.setSelectedOutlinePassMeshId(row.meshId)
   }
 
   function handleCloseDetail() {
     showDetail.value = false
+    store.setSelectedOutlinePassMeshId('')
   }
 </script>
 
 <template>
-  <div v-show="props.isView" class="view-container">
+  <div v-show="props.isView" class="view-container" :class="{ 'fade-out': showDetail }">
     <div class="view-container-wrapper">
       <table class="list-title-container">
         <thead>
@@ -86,90 +99,6 @@
               <td class="w-50">{{ item.number }}</td>
               <td class="w-50">{{ item.typeName }}</td>
             </tr>
-            <!-- <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr>
-            <tr>
-              <td class="w-50">FB001</td>
-              <td class="w-50">消防箱</td>
-            </tr> -->
           </tbody>
         </table>
       </div>
@@ -187,11 +116,11 @@
           <div class="row">
             <div class="item">
               <div class="name">检测时间：</div>
-              <div class="value">2023年3月1日</div>
+              <div class="value">{{ currentDetail.lastCheck }}</div>
             </div>
             <div class="item">
               <div class="name">设备状态：</div>
-              <div class="value">完好</div>
+              <div class="value">{{ currentDetail.status }}</div>
             </div>
           </div>
         </div>
@@ -205,31 +134,31 @@
               <div class="row">
                 <div class="item">
                   <div class="name">姓名：</div>
-                  <div class="val">章三</div>
+                  <div class="val">{{ currentDetail.userName }}</div>
                 </div>
                 <div class="item">
                   <div class="name">性别：</div>
-                  <div class="val">男</div>
+                  <div class="val">{{ currentDetail.gender }}</div>
                 </div>
               </div>
               <div class="row">
                 <div class="item">
-                  <div class="name">姓名：</div>
-                  <div class="val">张三</div>
-                </div>
-                <div class="item">
-                  <div class="name">性别：</div>
-                  <div class="val">男</div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="item">
-                  <div class="name">联系电话：</div>
-                  <div class="val">18888888888</div>
+                  <div class="name">职位：</div>
+                  <div class="val">{{ currentDetail.postName }}</div>
                 </div>
                 <div class="item">
                   <div class="name">部门：</div>
-                  <div class="val">后勤部</div>
+                  <div class="val">{{ currentDetail.department }}</div>
+                </div>
+              </div>
+              <div class="row">
+                <!-- <div class="item">
+                  <div class="name">性别：</div>
+                  <div class="val">男</div>
+                </div> -->
+                <div class="item">
+                  <div class="name">联系电话：</div>
+                  <div class="val">{{ currentDetail.phone }}</div>
                 </div>
               </div>
             </div>
@@ -254,6 +183,10 @@
     transform: translateZ(0) matrix3d(0.754844, -0.19101, -0.627475, 0, 0, -0.956657, 0.291217, 0, 0.655904, 0.219823, -0.277873, 0, 0, 0, -42.5923, 1) translate(0, 0) rotateX(180deg);
     font-size: 18px;
     opacity: 1;
+
+    &.fade-out {
+      opacity: 0.3;
+    }
 
     .view-container-wrapper {
       padding: 5px;

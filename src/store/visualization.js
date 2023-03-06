@@ -23,6 +23,8 @@ export default defineStore('visualization', () => {
   const isLoading = ref(true)
   // 当前查看视图
   const currentViewType = ref(viewType.defaultView)
+  // 当前高亮 mesh id
+  const selectedOutlinePassMeshId = ref('')
 
   function setIsloading(is) {
     isLoading.value = is
@@ -32,10 +34,18 @@ export default defineStore('visualization', () => {
     currentViewType.value = type
   }
 
+  // 设置当前高亮 mesh id
+  function setSelectedOutlinePassMeshId(meshId) {
+    selectedOutlinePassMeshId.value = meshId
+  }
+
   return {
     isLoading,
     currentViewType,
+    selectedOutlinePassMeshId,
+    // function
     setIsloading,
-    setCurrentViewType
+    setCurrentViewType,
+    setSelectedOutlinePassMeshId
   }
 })

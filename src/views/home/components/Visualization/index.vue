@@ -1,7 +1,9 @@
 <script setup>
+import { storeToRefs } from 'pinia'
 import {
   onMounted,
-  onBeforeUnmount
+  onBeforeUnmount,
+  watch
 } from 'vue'
 
 import useVisualizationStore, {
@@ -21,6 +23,10 @@ import load from './ThreeDimensional/resources/index'
 import ThreeDimensional from './ThreeDimensional'
 
 const store = useVisualizationStore()
+const {
+  currentViewType,
+  selectedOutlinePassMeshId
+} = storeToRefs(store)
 let threeDimensional = null
 let world = null
 
@@ -39,9 +45,16 @@ onBeforeUnmount(() => {
   }
 })
 
+watch(selectedOutlinePassMeshId, newSelectedMeshId => {
+  if (viewType.groundFloorView === currentViewType.value) {
+    world.controls.groundFloor.addOutlinePass(newSelectedMeshId)
+  }
+})
+
 function handlerChangeView(type) {
   if (world) {
     store.setCurrentViewType(type)
+    world.restoreFloor()
 
     if (type === viewType.disassembleView) {
       world.setActiveMachineView()
@@ -49,6 +62,7 @@ function handlerChangeView(type) {
       world.setActiveDefaultView()
     } else if (type === viewType.groundFloorView) {
       world.setActiveGroundFloorView()
+      world.controls.groundFloor.setEffect()
     }
   }
 }

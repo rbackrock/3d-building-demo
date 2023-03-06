@@ -47,7 +47,8 @@ export default class World extends EventEmitter {
     // 准备需要控制的 object3d 对象
     this.controls = {
       machine: null,
-      scienceBuildingInfo: null
+      scienceBuildingInfo: null,
+      groundFloor: null
     }
 
     this.createNormalScene()
@@ -67,13 +68,9 @@ export default class World extends EventEmitter {
     // 科技楼信息
     let scienceBuildingInfoMesh = null
     // 第一层楼主体网格
-    let groundFloorPrincipalMesh = []
-    // 楼层之间的平面
-    let firstFloorNum1 = null
-    let firstFloorNum2 = null
-    let firstFloorNum3 = null
-    let firstFloorNum4 = null
-    let firstFloorNum5 = null
+    let groundFloorMeshList = []
+
+    console.log(gltf.scene)
 
     gltf.scene.traverse(child => {
       // 添加科技楼数据 mesh
@@ -82,8 +79,18 @@ export default class World extends EventEmitter {
         this.scene.add(scienceBuildingInfoMesh)
       }
 
-      if (child.name === 'fragmentF1#1') {
-        groundFloorPrincipalMesh = child
+      if (
+        child.name === 'fragmentF1' ||
+        hasIncludeImportMeshName(child.name, 'chairF1') || 
+        hasIncludeImportMeshName(child.name, 'desktopF1') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingBoxF1') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingCupboardF1') || 
+        hasIncludeImportMeshName(child.name, 'fragmentF1') || 
+        hasIncludeImportMeshName(child.name, 'innerWallF1') || 
+        hasIncludeImportMeshName(child.name, 'smogResponseF1') || 
+        hasIncludeImportMeshName(child.name, 'windowF1')
+      ) {
+        groundFloorMeshList.push(child)
       }
     })
     this.scene.add(gltf.scene)
@@ -91,7 +98,7 @@ export default class World extends EventEmitter {
     // 科技楼信息 controls
     this.controls.scienceBuildingInfo = new ScienceBuildingInfo(scienceBuildingInfoMesh)
     // 一层楼 controls
-    this.controls.groundFloor = new GroundFloor(groundFloorPrincipalMesh)
+    this.controls.groundFloor = new GroundFloor(groundFloorMeshList)
   }
 
   createMachineScene() {
@@ -162,7 +169,7 @@ export default class World extends EventEmitter {
           child.layers.set(layers.GROUND_FLOOR)
         }
 
-        if (hasIncludeImportMeshName(child.name, 'fragmentF1')) {
+        if (hasIncludeImportMeshName(child.name, 'innerWallF1')) {
           controlsTarget = child.position.clone()
         }
       }
@@ -184,6 +191,12 @@ export default class World extends EventEmitter {
     }
 
     return false
+  }
+
+  // SFC 外部调用
+
+  restoreFloor() {
+    this.controls.groundFloor.restore()
   }
 
   bindEvent() {}

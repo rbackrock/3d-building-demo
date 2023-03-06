@@ -7,12 +7,11 @@ import gsap from 'gsap'
 import {
   importMeshLastName
 } from '../../Utils'
-import {
-  layers
-} from '../../Camera'
+import ThreeDimensional from '../../index'
 
 export default class Machine {
   constructor(mesh) {
+    this.threeDimensional = new ThreeDimensional()
     this.mesh = mesh
     this.machine = {
     }

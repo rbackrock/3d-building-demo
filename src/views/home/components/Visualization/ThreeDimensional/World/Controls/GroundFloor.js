@@ -1,40 +1,65 @@
+import * as THREE from 'three'
 import {
   hasIncludeImportMeshName
 } from '../../Utils/index'
+import ThreeDimensional from '../../index'
 
 export default class GroundFloor {
-  constructor(principalMesh) {
-    this.mesh = principalMesh
-    this.transparentMeshList = []
+  constructor(meshList) {
+    this.threeDimensional = new ThreeDimensional()
+    this.meshList = meshList
+    // 需要透明的物体列表
+    this.effectMeshList = []
+    // 需要控制的物体列表
+    this.controlsMeshList = []
+    this.isTransparent = false
 
-    this.setTransparent()
+    this.filterMesh()
   }
 
-  setTransparent() {
-    const opacity = 0.16
-
-    this.mesh.traverse(child => {
+  filterMesh() {
+    for (const mesh of this.meshList) {
       if (
-        !hasIncludeImportMeshName(child.name, 'fireFightingBoxF1') &&
-        !hasIncludeImportMeshName(child.name, 'fireFightingCupboardF1') &&
-        !hasIncludeImportMeshName(child.name, 'smogResponseF1')
+        !hasIncludeImportMeshName(mesh.name, 'fireFightingBoxF1') &&
+        !hasIncludeImportMeshName(mesh.name, 'fireFightingCupboardF1') &&
+        !hasIncludeImportMeshName(mesh.name, 'smogResponseF1')
       ) {
-        if (child.type === 'Mesh') {
-          this.transparentMeshList.push(child)
+        if (mesh.type === 'Mesh') {
+          mesh.material.transparent = true
+          this.effectMeshList.push(mesh)
         }
+      } else {
+        this.controlsMeshList.push(mesh)
       }
-    })
+    }
+  }
 
-    for (const mesh of this.transparentMeshList) {
-      mesh.material.transparent = true
+  setEffect() {
+    // 设置透明
+    const opacity = 0.16
+    this.isTransparent = true
+    for (const mesh of this.effectMeshList) {
       mesh.material.opacity = opacity
     }
   }
 
-  restore() {
-    for (const mesh of transparentMeshList) {
-      mesh.material.transparent = true
-      mesh.material.opacity = 1
+  addOutlinePass(meshId) {
+    for (const mesh of this.controlsMeshList) {
+      if (mesh.name === meshId) {
+        this.threeDimensional.outlinePass.selectedObjects = [mesh]
+        break
+      }
     }
+  }
+
+  restore() {
+    if (this.isTransparent) {
+      this.isTransparent = true
+      for (const mesh of this.effectMeshList) {
+        mesh.material.opacity = 1
+      }
+    }
+
+    this.threeDimensional.outlinePass.selectedObjects = []
   }
 }

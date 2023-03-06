@@ -28,6 +28,10 @@ export default class Postprocessing {
       this.camera.activeCamera
     )
     this.composer.addPass(this.outlinePass)
+
+    // 设置颜色
+    this.outlinePass.visibleEdgeColor.set('#ff0000')
+    this.outlinePass.hiddenEdgeColor.set('#ff0000')
   }
 
   resize() {

@@ -37,17 +37,14 @@ export const viewPostion = {
     z: 30.757085614756576
   },
   GROUND_FLOOR: {
-    // x: -12.047786712646484,
-    // y: 20.52861785888672,
-    // z: 24.73171615600586
-
-    // x: -11.213001251220703,
-    // y: 25.330535888671875,
-    // z: 27.778125762939453,
-
+    // 默认
     x: -8.034419059753418,
     y: 23.485822677612305,
     z: 21.631031036376953
+
+    // x: -4.603981018066406,
+    // y: 22.198165893554688,
+    // z: 9.193706512451172
   },
   DISASSEMBLE: {
     x: 0.233,
@@ -131,7 +128,7 @@ export default class Camera {
     this.activeControls = currentActiveControls
   }
 
-  setAngleView(layersValue, viewPositionValue, controlTarget = new THREE.Vector3(0, 0, 0)) {
+  setAngleView(layersValue, viewPositionValue, controlTarget = new THREE.Vector3(0, 0, 0), isAnimation = true) {
     const currentActiveCamera = this.activeCamera
     const currentActiveControl = this.activeControls
 
@@ -139,7 +136,7 @@ export default class Camera {
 
     currentActiveControl.target = controlTarget
 
-    this.changeViewPosition(viewPositionValue)
+    this.changeViewPosition(viewPositionValue, isAnimation)
   }
 
   /**
@@ -157,7 +154,7 @@ export default class Camera {
     }
   }
 
-  changeViewPosition(viewPositionValue) {
+  changeViewPosition(viewPositionValue, isAnimation) {
     const start = {
       x: this.activeCamera.position.x,
       y: this.activeCamera.position.y,
@@ -168,20 +165,24 @@ export default class Camera {
       y: viewPositionValue.y,
       z: viewPositionValue.z,
     }
-    
-    let animation = gsap.to(start, {
-      ...end,
-      duration: 0.6,
-      ease: 'none',
-      // repeat: 1,
-      onUpdate: () => {
-        this.activeCamera.position.set(start.x, start.y, start.z)
-      },
-      onComplete: () => {
-        animation.kill()
-        animation = null
-      }
-    })
+
+    if (isAnimation) {
+      let animation = gsap.to(start, {
+        ...end,
+        duration: 0.6,
+        ease: 'none',
+        // repeat: 1,
+        onUpdate: () => {
+          this.activeCamera.position.set(start.x, start.y, start.z)
+        },
+        onComplete: () => {
+          animation.kill()
+          animation = null
+        }
+      })
+    } else {
+      this.activeCamera.position.set(end.x, end.y, end.z)
+    }
   }
 
   resize() {
