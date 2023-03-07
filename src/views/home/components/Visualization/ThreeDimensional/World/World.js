@@ -31,6 +31,8 @@ import Machine from './Controls/Machine'
 import ScienceBuildingInfo from './Controls/ScienceBuildingInfo'
 import GroundFloor from './Controls/GroundFloor'
 import SecondFloor from './Controls/SecondFloor'
+import ThirdFloor from './Controls/ThirdFloor'
+import FourFloor from './Controls/FourFloor'
 
 export default class World extends EventEmitter {
   constructor() {
@@ -50,7 +52,9 @@ export default class World extends EventEmitter {
       machine: null,
       scienceBuildingInfo: null,
       groundFloor: null,
-      secondFloor: null
+      secondFloor: null,
+      thirdFloor: null,
+      fourFloor: null
     }
 
     this.createNormalScene()
@@ -73,6 +77,10 @@ export default class World extends EventEmitter {
     const groundFloorMeshList = []
     // 第二层楼主体网格
     const secondFloorMeshList = []
+    // 第三层楼主体网格
+    const thirdFloorMeshList = []
+    // 第四层楼主体网格
+    const fourFloorMeshList = []
 
     gltf.scene.traverse(child => {
       // 添加科技楼数据 mesh
@@ -108,6 +116,34 @@ export default class World extends EventEmitter {
       ) {
         secondFloorMeshList.push(child)
       }
+
+      if (
+        child.name === 'fragmentF3' ||
+        hasIncludeImportMeshName(child.name, 'chairF3') || 
+        hasIncludeImportMeshName(child.name, 'desktopF3') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingBoxF3') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingCupboardF3') || 
+        hasIncludeImportMeshName(child.name, 'fragmentF3') || 
+        hasIncludeImportMeshName(child.name, 'innerWallF3') || 
+        hasIncludeImportMeshName(child.name, 'smogResponseF3') || 
+        hasIncludeImportMeshName(child.name, 'windowF3')
+      ) {
+        thirdFloorMeshList.push(child)
+      }
+
+      if (
+        child.name === 'fragmentF4' ||
+        hasIncludeImportMeshName(child.name, 'chairF4') || 
+        hasIncludeImportMeshName(child.name, 'desktopF4') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingBoxF4') || 
+        hasIncludeImportMeshName(child.name, 'fireFightingCupboardF4') || 
+        hasIncludeImportMeshName(child.name, 'fragmentF4') || 
+        hasIncludeImportMeshName(child.name, 'innerWallF4') || 
+        hasIncludeImportMeshName(child.name, 'smogResponseF4') || 
+        hasIncludeImportMeshName(child.name, 'windowF4')
+      ) {
+        fourFloorMeshList.push(child)
+      }
     })
     this.scene.add(gltf.scene)
 
@@ -117,6 +153,10 @@ export default class World extends EventEmitter {
     this.controls.groundFloor = new GroundFloor(groundFloorMeshList)
     // 二层楼 controls
     this.controls.secondFloor = new SecondFloor(secondFloorMeshList)
+    // 三层楼 controls
+    this.controls.thirdFloor = new ThirdFloor(thirdFloorMeshList)
+    // 四层楼 controls
+    this.controls.fourFloor = new FourFloor(fourFloorMeshList)
   }
 
   createMachineScene() {
@@ -225,6 +265,64 @@ export default class World extends EventEmitter {
     this.camera.setAngleView(layers.SECOND_FLOOR, viewPostion.SECOND_FLOOR, controlsTarget)
   }
 
+  setActiveThirdFloorView() {
+    let controlsTarget = new THREE.Vector3()
+    this.scene.traverse(child => {
+      if (!this.hasMachineMesh(child)) {
+        if (
+          hasIncludeImportMeshName(child.name, 'chairF3') || 
+          hasIncludeImportMeshName(child.name, 'desktopF3') || 
+          hasIncludeImportMeshName(child.name, 'fireFightingBoxF3') || 
+          hasIncludeImportMeshName(child.name, 'fireFightingCupboardF3') || 
+          hasIncludeImportMeshName(child.name, 'fragmentF3') || 
+          hasIncludeImportMeshName(child.name, 'innerWallF3') || 
+          hasIncludeImportMeshName(child.name, 'smogResponseF3') || 
+          hasIncludeImportMeshName(child.name, 'windowF3')
+          // ---
+          // (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
+          // (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
+        ) {
+          child.layers.set(layers.THIRD_FLOOR)
+        }
+
+        if (hasIncludeImportMeshName(child.name, 'innerWallF3')) {
+          controlsTarget = child.position.clone()
+        }
+      }
+    })
+
+    this.camera.setAngleView(layers.THIRD_FLOOR, viewPostion.THIRD_FLOOR, controlsTarget)
+  }
+
+  setActiveFourFloorView() {
+    let controlsTarget = new THREE.Vector3()
+    this.scene.traverse(child => {
+      if (!this.hasMachineMesh(child)) {
+        if (
+          hasIncludeImportMeshName(child.name, 'chairF4') || 
+          hasIncludeImportMeshName(child.name, 'desktopF4') || 
+          hasIncludeImportMeshName(child.name, 'fireFightingBoxF4') || 
+          hasIncludeImportMeshName(child.name, 'fireFightingCupboardF4') || 
+          hasIncludeImportMeshName(child.name, 'fragmentF4') || 
+          hasIncludeImportMeshName(child.name, 'innerWallF4') || 
+          hasIncludeImportMeshName(child.name, 'smogResponseF4') || 
+          hasIncludeImportMeshName(child.name, 'windowF4')
+          // ---
+          // (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '1') ||
+          // (hasIncludeImportMeshName(child.name, 'floorPlane') && importMeshLastName(child.name) === '2')
+        ) {
+          child.layers.set(layers.FOUR_FLOOR)
+        }
+
+        if (hasIncludeImportMeshName(child.name, 'innerWallF4')) {
+          controlsTarget = child.position.clone()
+        }
+      }
+    })
+
+    this.camera.setAngleView(layers.FOUR_FLOOR, viewPostion.FOUR_FLOOR, controlsTarget)
+  }
+
   // 排除机器场景
   hasMachineMesh(mesh) {
     if (
@@ -244,6 +342,9 @@ export default class World extends EventEmitter {
 
   restoreFloor() {
     this.controls.groundFloor.restore()
+    this.controls.secondFloor.restore()
+    this.controls.thirdFloor.restore()
+    this.controls.fourFloor.restore()
   }
 
   bindEvent() {}

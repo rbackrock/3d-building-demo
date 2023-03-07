@@ -50,6 +50,10 @@ watch(selectedOutlinePassMeshId, newSelectedMeshId => {
     world.controls.groundFloor.addOutlinePass(newSelectedMeshId)
   } else if (viewType.secondFloorView === currentViewType.value) {
     world.controls.secondFloor.addOutlinePass(newSelectedMeshId)
+  } else if (viewType.thirdFloorView === currentViewType.value) {
+    world.controls.thirdFloor.addOutlinePass(newSelectedMeshId)
+  } else if (viewType.fourFloorView === currentViewType.value) {
+    world.controls.fourFloor.addOutlinePass(newSelectedMeshId)
   }
 })
 
@@ -68,6 +72,12 @@ function handlerChangeView(type) {
     } else if (type === viewType.secondFloorView) {
       world.setActiveSecondFloorView()
       world.controls.secondFloor.setEffect()
+    } else if (type === viewType.thirdFloorView) {
+      world.setActiveThirdFloorView()
+      world.controls.thirdFloor.setEffect()
+    } else if (type === viewType.fourFloorView) {
+      world.setActiveFourFloorView()
+      world.controls.fourFloor.setEffect()
     }
   }
 }

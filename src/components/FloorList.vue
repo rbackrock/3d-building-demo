@@ -78,6 +78,7 @@
 
 <template>
   <div v-show="props.isView" class="view-container" :class="{ 'fade-out': showDetail }">
+    <div class="title">一层楼</div>
     <div class="view-container-wrapper">
       <table class="list-title-container">
         <thead>
@@ -90,6 +91,16 @@
       <div ref="scrollBodyRef" class="list-content-container">
         <table  class="list-content">
           <tbody>
+            <tr
+              v-for="(item, index) in list"
+              :key="index"
+              :class="{ active: currentRecordNumber === item.number }"
+              @click="handleShowDetail(item)"
+            >
+              <td class="w-50">{{ item.number }}</td>
+              <td class="w-50">{{ item.typeName }}</td>
+            </tr>
+
             <tr
               v-for="(item, index) in list"
               :key="index"
@@ -188,10 +199,17 @@
       opacity: 0.3;
     }
 
+    .title {
+      padding: 10px 0;
+      text-align: center;
+      font-size: 26px;
+      text-shadow: -4px -4px 9px #fff;
+    }
+
     .view-container-wrapper {
       padding: 5px;
       width: 100%;
-      height: 100%;
+      height: calc(100% - 56.5px);
 
       .list-title-container {
         width: 100%;
@@ -221,6 +239,7 @@
 
           tbody {
             width: 100%;
+            position: relative;
 
             tr {
               td {

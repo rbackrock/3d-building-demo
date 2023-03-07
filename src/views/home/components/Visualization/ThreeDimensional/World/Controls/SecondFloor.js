@@ -1,4 +1,3 @@
-import * as THREE from 'three'
 import {
   hasIncludeImportMeshName
 } from '../../Utils/index'
