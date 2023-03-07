@@ -100,16 +100,6 @@
               <td class="w-50">{{ item.number }}</td>
               <td class="w-50">{{ item.typeName }}</td>
             </tr>
-
-            <tr
-              v-for="(item, index) in list"
-              :key="index"
-              :class="{ active: currentRecordNumber === item.number }"
-              @click="handleShowDetail(item)"
-            >
-              <td class="w-50">{{ item.number }}</td>
-              <td class="w-50">{{ item.typeName }}</td>
-            </tr>
           </tbody>
         </table>
       </div>
